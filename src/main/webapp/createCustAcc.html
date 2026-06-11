@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Customer Account | X-PERT DETAILING</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #eef2f8 0%, #e5e9f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+
+    /* main card container */
+    .create-account-container {
+      max-width: 1000px;
+      width: 100%;
+      background: white;
+      border-radius: 40px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: 0.2s;
+    }
+
+    /* header with back button */
+    .form-header {
+      padding: 24px 32px 12px 32px;
+      border-bottom: 1px solid #edf2f7;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      background: #ffffff;
+    }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #f1f5f9;
+      padding: 8px 18px;
+      border-radius: 40px;
+      text-decoration: none;
+      color: #1f4e5e;
+      font-weight: 500;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .back-home i {
+      font-size: 14px;
+    }
+
+    .back-home:hover {
+      background: #e2e8f0;
+      color: #0f3b48;
+    }
+
+    .title-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .title-section h1 {
+      width: 100%;
+      font-size: 26px;
+      font-weight: 800;
+      color: rgb(7, 62, 90);
+      text-align: center;
+    }
+
+    .title-section p {
+      width: 100%;
+      color: #5b6e8c;
+      font-size: 14px;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* form layout - two columns grid */
+    .form-grid {
+      padding: 28px 32px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 32px;
+    }
+
+    /* full width elements */
+    .full-width {
+      grid-column: span 2;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-group label {
+      font-weight: 700;
+      font-size: 13px;
+      color: #1f4e5e;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-group label i {
+      color: #f4b942;
+      font-size: 14px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i.input-icon {
+      position: absolute;
+      left: 16px;
+      color: #9aaebf;
+      font-size: 14px;
+    }
+
+    .input-wrapper input,
+    .input-wrapper select {
+      width: 100%;
+      padding: 14px 16px 14px 42px;
+      border-radius: 18px;
+      border: 1.5px solid #e2e8f0;
+      background: #fefefe;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    .input-wrapper input:focus,
+    .input-wrapper select:focus {
+      border-color: #f4b942;
+      box-shadow: 0 0 0 3px rgba(244, 185, 66, 0.2);
+    }
+
+    /* password field with toggle */
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #8ba0bc;
+      font-size: 16px;
+    }
+
+    /* password requirements panel */
+    .password-requirements {
+      background: #f9fbfe;
+      padding: 16px 20px;
+      border-radius: 24px;
+      border: 1px solid #edf2f9;
+      margin-top: 8px;
+    }
+
+    .password-requirements p {
+      font-weight: 700;
+      font-size: 13px;
+      color: #2d4f5e;
+      margin-bottom: 10px;
+    }
+
+    .requirements-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      list-style: none;
+    }
+
+    .requirements-list li {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #5b6f8c;
+    }
+
+    .requirements-list li.valid {
+      color: #2b7e3a;
+    }
+
+    .requirements-list li i {
+      width: 16px;
+      font-size: 12px;
+    }
+
+    .fa-circle-check {
+      color: #2b7e3a;
+    }
+
+    .fa-circle-xmark {
+      color: #c2412c;
+    }
+
+    .row-double {
+      display: flex;
+      gap: 20px;
+      grid-column: span 2;
+    }
+
+    .row-double .input-group {
+      flex: 1;
+    }
+
+    /* register button */
+    .register-btn-wrapper {
+      grid-column: span 2;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .register-btn {
+      background: #1e7e8f;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 60px;
+      color: white;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      max-width: 280px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .register-btn:hover {
+      background: #0f6778;
+      transform: scale(1.01);
+      box-shadow: 0 8px 18px rgba(30, 126, 143, 0.2);
+    }
+
+    /* error & success state */
+    .error-message {
+      color: #d9534f;
+      font-size: 11px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .input-wrapper.error-input input,
+    .input-wrapper.error-input select {
+      border-color: #e25c5c;
+      background-color: #fff8f8;
+    }
+
+    .success-toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1f4e5e;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 60px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1100;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 780px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 18px;
+      }
+
+      .full-width,
+      .row-double,
+      .register-btn-wrapper {
+        grid-column: span 1;
+      }
+
+      .row-double {
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .form-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+    }
+
+    .avatar-small {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .avatar-small img {
+      width: 14%;
+      height: 14%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* sign in link styling */
+    .signin-link {
+      grid-column: span 2;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 18px;
+      font-size: 14px;
+      color: #5b6e8c;
+    }
+
+    .signin-link a {
+      color: #1e7e8f;
+      text-decoration: none;
+      font-weight: 700;
+      margin-left: 5px;
+      transition: 0.2s;
+    }
+
+    .signin-link a:hover {
+      color: #f4b942;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="create-account-container">
+    <div class="form-header">
+      <a href="dboard.html#dashboard">
+        <i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+      <div class="avatar-small">
+        <img src="image/LOGO XPERT.png" alt="Profile Logo">
+      </div>
+      <div class="title-section">
+        <h1> Create Customer Account</h1>
+        <p>Join X-PERT DETAILING today</p>
+      </div>
+    </div>
+
+    <form id="customerRegisterForm">
+      <div class="form-grid">
+        <!-- Full Name * -->
+        <div class="input-group">
+          <label> Full Name *</label>
+          <div class="input-wrapper">
+            <i class="fa-regular fa-circle-user input-icon"></i>
+            <input type="text" id="fullName" placeholder="Enter your full name" autocomplete="off">
+          </div>
+          <div class="error-message" id="fullNameError"></div>
+        </div>
+
+        <!-- Phone Number * -->
+        <div class="input-group">
+          <label> Phone Number *</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-mobile-alt input-icon"></i>
+            <input type="tel" id="phone" placeholder="0123456789">
+          </div>
+          <div class="error-message" id="phoneError"></div>
+        </div>
+
+        <!-- Email * -->
+        <div class="input-group">
+          <label> Email *</label>
+          <div class="input-wrapper">
+            <i class="fa-regular fa-envelope input-icon"></i>
+            <input type="email" id="email" placeholder="your.email@example.com">
+          </div>
+          <div class="error-message" id="emailError"></div>
+        </div>
+
+        <!-- Race * (select) -->
+        <div class="input-group">
+          <label>Race *</label>
+          <div class="input-wrapper">
+            <i class="fa-regular fa-flag input-icon"></i>
+            <select id="race">
+              <option value="" disabled selected>Select race</option>
+              <option>Malay</option>
+              <option>Chinese</option>
+              <option>Indian</option>
+              <option>Other Bumiputera</option>
+              <option>Others</option>
+            </select>
+          </div>
+          <div class="error-message" id="raceError"></div>
+        </div>
+
+        <!-- Religion * (select) -->
+        <div class="input-group">
+          <label> Religion *</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-dove input-icon"></i>
+            <select id="religion">
+              <option value="" disabled selected>Select religion</option>
+              <option>Islam</option>
+              <option>Christianity</option>
+              <option>Hinduism</option>
+              <option>Buddhism</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="error-message" id="religionError"></div>
+        </div>
+
+        <!-- Username * -->
+        <div class="input-group">
+          <label> Username *</label>
+          <div class="input-wrapper">
+            <i class="fa-regular fa-circle-check input-icon"></i>
+            <input type="text" id="username" placeholder="Choose a username">
+          </div>
+          <div class="error-message" id="usernameError"></div>
+        </div>
+
+        <!-- Password * -->
+        <div class="input-group">
+          <label>Password *</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-key input-icon"></i>
+            <input type="password" id="password" placeholder="Enter password">
+            <button type="button" class="password-toggle" id="togglePassword"></button>
+          </div>
+          <div class="error-message" id="passwordError"></div>
+        </div>
+
+        <!-- Confirm Password * -->
+        <div class="input-group">
+          <label> Confirm Password *</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-check-circle input-icon"></i>
+            <input type="password" id="confirmPassword" placeholder="Confirm password">
+            <button type="button" class="password-toggle" id="toggleConfirmPassword"></button>
+          </div>
+          <div class="error-message" id="confirmError"></div>
+        </div>
+
+        <!-- Password requirements checklist (exactly as screenshot) -->
+        <div class="full-width password-requirements">
+          <p><i class="fa-solid fa-shield-haltered"></i> Password must contain:</p>
+          <ul class="requirements-list" id="requirementsList">
+            <li id="reqLength"><i class="fa-regular fa-circle-xmark"></i> At least 8 characters</li>
+            <li id="reqUpper"><i class="fa-regular fa-circle-xmark"></i> One uppercase letter</li>
+            <li id="reqLower"><i class="fa-regular fa-circle-xmark"></i> One lowercase letter</li>
+            <li id="reqNumber"><i class="fa-regular fa-circle-xmark"></i> One number</li>
+            <li id="reqSpecial"><i class="fa-regular fa-circle-xmark"></i> One special character (!@#$%^&*)</li>
+          </ul>
+        </div>
+
+        <!-- Register button full width -->
+        <div class="register-btn-wrapper">
+          <button type="submit" class="register-btn"> Register</button>
+        </div>
+        <!-- Sign In Link Below Register Button -->
+        <div class="signin-link">
+          Already have an account? <a href="login.html" id="signInLink">Sign In</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+
+    sessionStorage.setItem('currentUser', JSON.stringify(user));
+    // DOM elements
+    const form = document.getElementById('customerRegisterForm');
+    const fullNameInput = document.getElementById('fullName');
+    const phoneInput = document.getElementById('phone');
+    const emailInput = document.getElementById('email');
+    const raceSelect = document.getElementById('race');
+    const religionSelect = document.getElementById('religion');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirmPassword');
+
+    // error spans
+    const fullNameErr = document.getElementById('fullNameError');
+    const phoneErr = document.getElementById('phoneError');
+    const emailErr = document.getElementById('emailError');
+    const raceErr = document.getElementById('raceError');
+    const religionErr = document.getElementById('religionError');
+    const usernameErr = document.getElementById('usernameError');
+    const passwordErr = document.getElementById('passwordError');
+    const confirmErr = document.getElementById('confirmError');
+
+    // password requirement elements
+    const reqLength = document.getElementById('reqLength');
+    const reqUpper = document.getElementById('reqUpper');
+    const reqLower = document.getElementById('reqLower');
+    const reqNumber = document.getElementById('reqNumber');
+    const reqSpecial = document.getElementById('reqSpecial');
+
+    // helper: show toast (success / error)
+    function showToast(message, type = 'success') {
+      const existingToast = document.querySelector('.success-toast');
+      if (existingToast) existingToast.remove();
+      const toast = document.createElement('div');
+      toast.className = 'success-toast';
+      const icon = type === 'success' ? '✅' : '⚠️';
+      toast.innerHTML = `${icon} ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // realtime password validator
+    function validatePasswordStrength(pwd) {
+      const lengthOk = pwd.length >= 8;
+      const upperOk = /[A-Z]/.test(pwd);
+      const lowerOk = /[a-z]/.test(pwd);
+      const numberOk = /[0-9]/.test(pwd);
+      const specialOk = /[!@#$%^&*]/.test(pwd);
+
+      updateRequirement(reqLength, lengthOk);
+      updateRequirement(reqUpper, upperOk);
+      updateRequirement(reqLower, lowerOk);
+      updateRequirement(reqNumber, numberOk);
+      updateRequirement(reqSpecial, specialOk);
+
+      return { lengthOk, upperOk, lowerOk, numberOk, specialOk, isValid: lengthOk && upperOk && lowerOk && numberOk && specialOk };
+    }
+
+    function updateRequirement(element, isValid) {
+      if (isValid) {
+        element.innerHTML = '<i class="fa-regular fa-circle-check"></i> ' + element.innerText.replace(/[✓✗]/g, '').trim();
+        element.classList.add('valid');
+      } else {
+        element.innerHTML = '<i class="fa-regular fa-circle-xmark"></i> ' + element.innerText.replace(/[✓✗]/g, '').trim();
+        element.classList.remove('valid');
+      }
+    }
+
+    // realtime check on password input
+    passwordInput.addEventListener('input', function () {
+      validatePasswordStrength(passwordInput.value);
+      if (confirmInput.value.trim() !== '') checkPasswordMatch();
+      clearFieldError(passwordErr);
+    });
+
+    function checkPasswordMatch() {
+      if (passwordInput.value !== confirmInput.value) {
+        confirmErr.innerText = 'Passwords do not match';
+        return false;
+      } else {
+        confirmErr.innerText = '';
+        return true;
+      }
+    }
+
+    confirmInput.addEventListener('input', function () {
+      checkPasswordMatch();
+      clearFieldError(confirmErr);
+    });
+
+    function clearFieldError(errElement) {
+      if (errElement.innerText !== '') errElement.innerText = '';
+    }
+
+    // Toggle password visibility
+    const togglePwd = document.getElementById('togglePassword');
+    const toggleConfirm = document.getElementById('toggleConfirmPassword');
+
+    togglePwd.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePwd.innerHTML = type === 'password' ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+    });
+
+    toggleConfirm.addEventListener('click', () => {
+      const type = confirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmInput.setAttribute('type', type);
+      toggleConfirm.innerHTML = type === 'password' ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+    });
+
+    // live validation for individual fields
+    function validateFullName() {
+      const val = fullNameInput.value.trim();
+      if (!val) { fullNameErr.innerText = 'Full name is required'; return false; }
+      if (val.length < 3) { fullNameErr.innerText = 'Enter at least 3 characters'; return false; }
+      fullNameErr.innerText = '';
+      return true;
+    }
+    function validatePhone() {
+      const val = phoneInput.value.trim();
+      const phoneRegex = /^[0-9+\-\s]{8,15}$/;
+      if (!val) { phoneErr.innerText = 'Phone number is required'; return false; }
+      if (!phoneRegex.test(val)) { phoneErr.innerText = 'Enter a valid phone number (8-15 digits)'; return false; }
+      phoneErr.innerText = '';
+      return true;
+    }
+    function validateEmail() {
+      const val = emailInput.value.trim();
+      const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+      if (!val) { emailErr.innerText = 'Email is required'; return false; }
+      if (!emailRegex.test(val)) { emailErr.innerText = 'Enter a valid email address'; return false; }
+      emailErr.innerText = '';
+      return true;
+    }
+    function validateRace() {
+      if (!raceSelect.value) { raceErr.innerText = 'Please select race'; return false; }
+      raceErr.innerText = ''; return true;
+    }
+    function validateReligion() {
+      if (!religionSelect.value) { religionErr.innerText = 'Please select religion'; return false; }
+      religionErr.innerText = ''; return true;
+    }
+    function validateUsername() {
+      const val = usernameInput.value.trim();
+      if (!val) { usernameErr.innerText = 'Username is required'; return false; }
+      if (val.length < 3) { usernameErr.innerText = 'Username must be at least 3 characters'; return false; }
+      usernameErr.innerText = '';
+      return true;
+    }
+    function validatePasswordFinal() {
+      const pwd = passwordInput.value;
+      const strength = validatePasswordStrength(pwd);
+      if (!pwd) { passwordErr.innerText = 'Password is required'; return false; }
+      if (!strength.isValid) { passwordErr.innerText = 'Password does not meet requirements'; return false; }
+      passwordErr.innerText = '';
+      return true;
+    }
+    function validateConfirmFinal() {
+      if (passwordInput.value !== confirmInput.value) {
+        confirmErr.innerText = 'Passwords do not match';
+        return false;
+      }
+      if (!confirmInput.value) { confirmErr.innerText = 'Please confirm your password'; return false; }
+      confirmErr.innerText = '';
+      return true;
+    }
+
+    fullNameInput.addEventListener('blur', validateFullName);
+    phoneInput.addEventListener('blur', validatePhone);
+    emailInput.addEventListener('blur', validateEmail);
+    raceSelect.addEventListener('change', validateRace);
+    religionSelect.addEventListener('change', validateReligion);
+    usernameInput.addEventListener('blur', validateUsername);
+
+    // form submission
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const isNameValid = validateFullName();
+      const isPhoneValid = validatePhone();
+      const isEmailValid = validateEmail();
+      const isRaceValid = validateRace();
+      const isReligionValid = validateReligion();
+      const isUsernameValid = validateUsername();
+      const isPasswordValid = validatePasswordFinal();
+      const isConfirmValid = validateConfirmFinal();
+
+      if (isNameValid && isPhoneValid && isEmailValid && isRaceValid && isReligionValid && isUsernameValid && isPasswordValid && isConfirmValid) {
+        // Registration logic - simulate account creation
+        const newCustomer = {
+          fullName: fullNameInput.value.trim(),
+          phone: phoneInput.value.trim(),
+          email: emailInput.value.trim(),
+          race: raceSelect.value,
+          religion: religionSelect.value,
+          username: usernameInput.value.trim(),
+          password: passwordInput.value
+        };
+        console.log('Customer Registered:', newCustomer);
+
+        // Show success toast and reset form (optional)
+        showToast(`Welcome ${newCustomer.fullName}! Account created successfully.`, 'success');
+        form.reset();
+        // reset any leftover errors & password strength indicators
+        document.querySelectorAll('.error-message').forEach(el => el.innerText = '');
+        // reset password requirement icons
+        const defaultReqs = [
+          { elem: reqLength, text: 'At least 8 characters' },
+          { elem: reqUpper, text: 'One uppercase letter' },
+          { elem: reqLower, text: 'One lowercase letter' },
+          { elem: reqNumber, text: 'One number' },
+          { elem: reqSpecial, text: 'One special character (!@#$%^&*)' }
+        ];
+        defaultReqs.forEach(r => {
+          r.elem.innerHTML = '<i class="fa-regular fa-circle-xmark"></i> ' + r.text;
+          r.elem.classList.remove('valid');
+        });
+        // clear password fields visually
+        passwordInput.value = '';
+        confirmInput.value = '';
+        // reset toggle icons to default eye-slash
+        passwordInput.setAttribute('type', 'password');
+        confirmInput.setAttribute('type', 'password');
+        togglePwd.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+        toggleConfirm.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+        // Optionally redirect simulation: back to home alert
+        setTimeout(() => {
+          if (confirm("Account created! Redirect to home page?")) {
+            window.location.href = "#"; // stays, but user can click back
+            showToast("Redirect to home demo", "success");
+          }
+        }, 300);
+      } else {
+        showToast("Please fill all required fields correctly", "error");
+      }
+    });
+
+    // Back to Home button simulation
+    const backBtn = document.getElementById('backHomeBtn');
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast("Navigate back to home (demo)", "success");
+      // can add actual redirect logic if needed
+    });
+
+    // Sign In link handler
+    const signInLink = document.getElementById('signInLink');
+    signInLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast(" Redirecting to Sign In page (demo)", "success");
+
+    });
+
+    // initial requirement set
+    validatePasswordStrength('');
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Staff Accounts | X-PERT DETAILING</title>
+  <meta name="description" content="X-PERT Detailing Staff Account Management">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Page-specific styles ── */
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 0.9rem;
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      background: var(--panel-bg);
+      padding: 12px 20px;
+      border-radius: 60px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      border: 1px solid var(--panel-border);
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border-radius: 40px;
+      padding: 8px 18px;
+      gap: 10px;
+      border: 1px solid var(--panel-border);
+      width: 320px;
+    }
+
+    .search-box i { color: var(--text-muted); }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.875rem;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-main);
+    }
+
+    .create-btn {
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 10px 22px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .create-btn:hover {
+      background: var(--secondary);
+      transform: translateY(-1px);
+    }
+
+    .staff-table-container {
+      background: var(--panel-bg);
+      border-radius: 16px;
+      padding: 0 0 8px 0;
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,.06);
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    .staff-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .staff-table th {
+      text-align: left;
+      padding: 14px 18px;
+      background: #f8fafc;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 2px solid var(--panel-border);
+    }
+
+    .staff-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--panel-border);
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .staff-table tr:last-child td { border-bottom: none; }
+    .staff-table tr:hover td { background: #f8fafc; }
+
+    .staff-status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--success-glow);
+      color: var(--success);
+    }
+
+    .staff-status-badge.inactive {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .delete-btn {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.875rem;
+      color: var(--danger);
+      cursor: pointer;
+      opacity: 0.85;
+      transition: all 0.2s;
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+      background: var(--danger);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .create-staff-modal {
+      background: #fff;
+      max-width: 860px;
+      width: 90%;
+      border-radius: 20px;
+      padding: 28px 32px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--panel-border);
+      padding-bottom: 14px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      line-height: 1;
+      transition: color 0.15s;
+    }
+
+    .close-modal:hover { color: var(--danger); }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 24px;
+    }
+
+    .full-width { grid-column: span 2; }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    .input-group label i {
+      color: var(--primary);
+      margin-right: 5px;
+    }
+
+    .input-group input,
+    .input-group select {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--panel-border);
+      background: #f8fafc;
+      font-size: 0.875rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(13,83,101,0.1);
+    }
+
+    .password-requirements {
+      background: #f8fafc;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border: 1px solid var(--panel-border);
+    }
+
+    .password-requirements ul {
+      margin-left: 18px;
+      margin-top: 4px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+      border-top: 1px solid var(--panel-border);
+      padding-top: 20px;
+    }
+
+    .cancel-btn {
+      background: #f1f5f9;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-muted);
+      transition: background 0.15s;
+    }
+
+    .cancel-btn:hover { background: #e2e8f0; }
+
+    .register-btn {
+      background: var(--primary);
+      border: none;
+      padding: 10px 26px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .register-btn:hover { background: var(--secondary); }
+
+    /* Toast */
+    .toast-notify {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      z-index: 1100;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      animation: slideDownToast 0.3s ease;
+    }
+
+    @keyframes slideDownToast {
+      from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+      to   { transform: translateX(-50%) translateY(0);     opacity: 1; }
+    }
+
+    @media (max-width: 780px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .full-width { grid-column: span 1; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-view" class="view active">
+
+    <!-- Sidebar (matches dboard.html) -->
+    <aside class="sidebar">
+      <div class="sidebar-header" style="border:none;padding:0;cursor:pointer;transition:opacity .2s;"
+        onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
+        onclick="window.location.href='viewUpdatestaffacc.html'">
+        <div class="mini-profile" style="width:100%;">
+          <div class="mini-avatar"><i class="fa-solid fa-user"></i></div>
+          <div style="display:flex;flex-direction:column;justify-content:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+            <h4 id="sidebar-user-name" style="font-size:14px;margin:0;color:white;">User</h4>
+            <p id="sidebar-user-role" style="font-size:11px;opacity:.8;margin:0;text-transform:capitalize;color:white;">Role</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" style="padding-top:10px;">
+        <a href="dboard.html" class="nav-item role-staff" data-target="dashboard">
+          <i class="fa-solid fa-gauge"></i> Dashboard
+        </a>
+
+        <div class="nav-section-title"
+          style="padding:10px 15px 0;font-size:0.75rem;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:1px;">
+          Booking</div>
+        <a href="custBooking.html" class="nav-item role-customer">
+          <i class="fa-solid fa-calendar-check"></i> My Bookings
+        </a>
+        <a href="staffBooking.html" class="nav-item role-staff">
+          <i class="fa-solid fa-calendar-check"></i> Manage Bookings
+        </a>
+        <a href="index.html" class="nav-item">
+          <i class="fa-solid fa-box"></i> Package
+        </a>
+        <a href="vehicle.html" class="nav-item">
+          <i class="fa-solid fa-car"></i> Vehicle
+        </a>
+        <a href="staffReport.html" class="nav-item role-staff">
+          <i class="fa-solid fa-chart-bar"></i> Report
+        </a>
+        <a href="custInvoice.html" class="nav-item role-customer">
+          <i class="fa-solid fa-file-lines"></i> Invoice
+        </a>
+        <a href="staffInvoice.html" class="nav-item role-staff">
+          <i class="fa-solid fa-file-lines"></i> Invoice
+        </a>
+
+        <a href="deleteCust.html" class="nav-item role-staff">
+          <i class="fa-solid fa-users-slash"></i> Manage Customer
+        </a>
+      </nav>
+
+      <div class="sidebar-footer" style="border-top:1px solid rgba(255,255,255,0.1);margin-top:auto;">
+        <button id="logout-btn" class="nav-item text-danger"
+          onclick="sessionStorage.removeItem('currentUser'); window.location.href='homepage.html';">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="page-container">
+
+        <div class="page-header">
+          <h1><i class="fa-solid fa-users-gear" style="color:var(--primary);margin-right:10px;"></i>Manage Staff Accounts</h1>
+          <p>Create, view and remove staff accounts for X-PERT Detailing.</p>
+        </div>
+
+        <div class="action-bar">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchStaffInput" placeholder="Search all staff accounts...">
+          </div>
+          <button class="create-btn" id="openCreateModalBtn">
+            <i class="fa-solid fa-plus"></i> Create Staff Account
+          </button>
+        </div>
+
+        <!-- Staff Table -->
+        <div class="staff-table-container">
+          <table class="staff-table">
+            <thead>
+              <tr>
+                <th>Staff ID</th>
+                <th>Full Name</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="staffTableBody"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: Create Staff Account -->
+  <div id="createStaffModal" class="modal-overlay">
+    <div class="create-staff-modal">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-user-plus" style="color:var(--primary);margin-right:8px;"></i> Create Staff Account</h2>
+        <button class="close-modal" id="closeModalBtn">&times;</button>
+      </div>
+      <form id="staffForm">
+        <div class="form-grid">
+          <div class="input-group">
+            <label><i class="fa-regular fa-user"></i> Full Name *</label>
+            <input type="text" id="fullName" placeholder="Enter full name" required>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-regular fa-circle-user"></i> Username *</label>
+            <input type="text" id="username" placeholder="Enter username" required>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-solid fa-briefcase"></i> Role *</label>
+            <select id="role" required>
+              <option value="" disabled selected>Select role</option>
+              <option>Supervisor</option>
+              <option>Detailing Specialist</option>
+              <option>Customer Support</option>
+              <option>Manager</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-solid fa-phone"></i> Phone Number *</label>
+            <input type="tel" id="phone" placeholder="0123456789" required>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-solid fa-id-card"></i> Staff ID *</label>
+            <input type="text" id="staffId" placeholder="STF001" required>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-regular fa-envelope"></i> Email *</label>
+            <input type="email" id="email" placeholder="staff@example.com" required>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-solid fa-key"></i> Password *</label>
+            <input type="password" id="password" placeholder="Password" required>
+          </div>
+          <div class="input-group">
+            <label><i class="fa-solid fa-lock"></i> Confirm Password *</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+          </div>
+
+          <div class="full-width password-requirements">
+            <i class="fa-solid fa-circle-info" style="color:var(--primary);margin-right:5px;"></i>
+            <strong>Password Requirements:</strong>
+            <ul>
+              <li>Minimum 8 characters</li>
+              <li>One uppercase letter</li>
+              <li>One lowercase letter</li>
+              <li>One number</li>
+            </ul>
+          </div>
+          <div class="full-width" id="formErrorMsg" style="color:var(--danger);font-size:0.8rem;"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" id="cancelFormBtn">Cancel</button>
+          <button type="submit" class="register-btn"><i class="fa-solid fa-check"></i> Register</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Load user from session
+    (function () {
+      const u = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+      document.getElementById('sidebar-user-name').textContent = u.name || 'Staff';
+      document.getElementById('sidebar-user-role').textContent = u.email || 'staff';
+      // Role-based nav visibility
+      const role = u.role || 'staff';
+      document.querySelectorAll('.role-staff').forEach(el => el.style.display = role === 'customer' ? 'none' : '');
+      document.querySelectorAll('.role-customer').forEach(el => el.style.display = role === 'customer' ? '' : 'none');
+    })();
+
+    // ---------- STAFF DATA ----------
+    let staffList = [
+      { id: "STF001", fullName: "Sarah Johnson",  username: "sarah_j", role: "Supervisor",           email: "sarah@autoservice.com", phone: "0123456789", status: "active" },
+      { id: "STF002", fullName: "Tom Anderson",   username: "tom_a",   role: "Detailing Specialist", email: "tom@autoservice.com",   phone: "0198765432", status: "active" },
+      { id: "STF003", fullName: "Lisa Martinez",  username: "lisa_m",  role: "Car Wash Attendant",   email: "lisa@autoservice.com",  phone: "0187654321", status: "active" }
+    ];
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[m] || m));
+    }
+
+    function renderStaffTable(searchTerm = "") {
+      const tbody = document.getElementById("staffTableBody");
+      if (!tbody) return;
+      const q = searchTerm.toLowerCase();
+      const filtered = staffList.filter(s =>
+        s.fullName.toLowerCase().includes(q) ||
+        s.id.toLowerCase().includes(q) ||
+        s.username.toLowerCase().includes(q) ||
+        s.email.toLowerCase().includes(q) ||
+        s.role.toLowerCase().includes(q)
+      );
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);">No staff accounts found.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = filtered.map(staff => `
+        <tr>
+          <td>${escapeHtml(staff.id)}</td>
+          <td>${escapeHtml(staff.fullName)}</td>
+          <td>${escapeHtml(staff.username)}</td>
+          <td>${escapeHtml(staff.role)}</td>
+          <td>${escapeHtml(staff.email)}</td>
+          <td>${escapeHtml(staff.phone)}</td>
+          <td><span class="staff-status-badge ${staff.status === 'active' ? '' : 'inactive'}">${staff.status}</span></td>
+          <td><button class="delete-btn" data-id="${staff.id}"><i class="fa-regular fa-trash-can"></i></button></td>
+        </tr>
+      `).join('');
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          staffList = staffList.filter(s => s.id !== id);
+          renderStaffTable(document.getElementById("searchStaffInput").value);
+          showToast(`Staff ${id} removed`);
+        });
+      });
+    }
+
+    function isPasswordStrong(pwd) {
+      return pwd && pwd.length >= 8 && /[A-Z]/.test(pwd) && /[a-z]/.test(pwd) && /[0-9]/.test(pwd);
+    }
+
+    function generateStaffId() {
+      let max = 0;
+      staffList.forEach(s => {
+        const m = s.id.match(/STF(\d+)/);
+        if (m) max = Math.max(max, parseInt(m[1], 10));
+      });
+      return `STF${String(max + 1).padStart(3, '0')}`;
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast-notify';
+      toast.innerHTML = `<i class="fa-solid fa-check"></i> ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2800);
+    }
+
+    // Modal logic
+    const modal       = document.getElementById("createStaffModal");
+    const openBtn     = document.getElementById("openCreateModalBtn");
+    const closeBtn    = document.getElementById("closeModalBtn");
+    const cancelBtn   = document.getElementById("cancelFormBtn");
+    const staffForm   = document.getElementById("staffForm");
+    const formError   = document.getElementById("formErrorMsg");
+
+    function openModal() {
+      staffForm.reset();
+      formError.innerText = '';
+      document.getElementById("staffId").value = generateStaffId();
+      modal.classList.add("active");
+    }
+
+    function closeModal() {
+      modal.classList.remove("active");
+    }
+
+    openBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    cancelBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+
+    staffForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const fullName      = document.getElementById("fullName").value.trim();
+      const username      = document.getElementById("username").value.trim();
+      const role          = document.getElementById("role").value;
+      const phone         = document.getElementById("phone").value.trim();
+      const staffId       = document.getElementById("staffId").value.trim().toUpperCase();
+      const email         = document.getElementById("email").value.trim();
+      const password      = document.getElementById("password").value;
+      const confirmPwd    = document.getElementById("confirmPassword").value;
+
+      if (!fullName || !username || !role || !phone || !staffId || !email || !password) {
+        formError.innerText = "All fields marked with * are required."; return;
+      }
+      if (password !== confirmPwd) {
+        formError.innerText = "Password and Confirm Password do not match."; return;
+      }
+      if (!isPasswordStrong(password)) {
+        formError.innerText = "Password must be at least 8 characters with uppercase, lowercase and a number."; return;
+      }
+      if (staffList.some(s => s.id === staffId)) {
+        formError.innerText = `Staff ID ${staffId} already exists.`; return;
+      }
+      if (staffList.some(s => s.username.toLowerCase() === username.toLowerCase())) {
+        formError.innerText = `Username '${username}' already taken.`; return;
+      }
+      if (staffList.some(s => s.email.toLowerCase() === email.toLowerCase())) {
+        formError.innerText = `Email '${email}' already registered.`; return;
+      }
+      if (!/^[0-9+\-\s]{8,15}$/.test(phone)) {
+        formError.innerText = "Please enter a valid phone number (8–15 digits)."; return;
+      }
+
+      staffList.push({ id: staffId, fullName, username, role, email, phone, status: "active" });
+      renderStaffTable(document.getElementById("searchStaffInput").value);
+      showToast(`${fullName} (${staffId}) created successfully`);
+      closeModal();
+    });
+
+    document.getElementById("searchStaffInput").addEventListener("input", e => {
+      renderStaffTable(e.target.value);
+    });
+
+    // Initial render
+    renderStaffTable("");
+  </script>
+</body>
+
+</html>

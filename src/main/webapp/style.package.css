@@ -1,0 +1,535 @@
+/* ============================================================
+   style_package.css  —  X-PERT Detailing Package Page
+   Aligned with the dboard.html / styles.css design system
+   ============================================================ */
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f3f4f6;
+    color: #1f2937;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ---------- App shell ---------- */
+.dashboard {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+    width: 280px;
+    background: linear-gradient(165deg, #0e4b5c 0%, #08313b 100%);
+    color: #fff;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
+    flex-shrink: 0;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #f4b942;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #2c2c2c;
+    flex-shrink: 0;
+}
+
+/* ---------- Sidebar nav ---------- */
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.nav-menu li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    color: #d9eef3;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-menu li:hover,
+.nav-menu li.active {
+    background: rgba(244, 185, 66, 0.2);
+    color: #f4b942;
+}
+
+.nav-menu li.active {
+    font-weight: 600;
+}
+
+/* ---------- Logout ---------- */
+.logout-btn {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(239, 68, 68, 0.15);
+    border: none;
+    color: #fca5a5;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+}
+
+.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    color: #fff;
+}
+
+/* ---------- Main content ---------- */
+.main-content {
+    flex: 1;
+    padding: 32px 36px;
+    background: #f3f4f6;
+    overflow-y: auto;
+}
+
+/* ---------- Page header ---------- */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.top-header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.5px;
+}
+
+.create-pkg-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0d5365;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 10px rgba(13, 83, 101, 0.25);
+}
+
+.create-pkg-btn:hover {
+    background: #1aa3bd;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(13, 83, 101, 0.3);
+}
+
+/* ---------- Package grid ---------- */
+.package-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+    align-content: start;
+}
+
+/* ---------- Package card ---------- */
+.card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.card.popular {
+    border: 2px solid #f4b942;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.popular-badge {
+    background: #f4b942;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* ---------- Card action buttons ---------- */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-icon-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #f8fafc;
+    color: #0d5365;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.edit-icon-btn:hover {
+    background: rgba(13, 83, 101, 0.12);
+    border-color: #0d5365;
+}
+
+.delete-icon-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #fee2e2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+
+.delete-icon-btn:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+/* ---------- Feature list ---------- */
+.feature-list {
+    list-style: none;
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.feature-list li {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feature-list li:first-child {
+    color: #0d5365;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.feature-list li i {
+    color: #10b981;
+    font-size: 0.75rem;
+}
+
+.more-link {
+    color: #1aa3bd;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 0.75rem;
+    display: inline-block;
+    transition: color 0.15s;
+}
+
+.more-link:hover {
+    color: #0d5365;
+}
+
+/* ---------- Modals ---------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-card {
+    background: #ffffff;
+    width: min(500px, 92vw);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #64748b;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+
+.close-btn:hover {
+    background: #f0f0f5;
+}
+
+/* ---------- Form elements ---------- */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #64748b;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    background: #f8fafc;
+    color: #1f2937;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #0d5365;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(13, 83, 101, 0.12);
+}
+
+/* ---------- Editor toolbar ---------- */
+.text-editor-tools {
+    background: #f8fafc;
+    padding: 8px 10px;
+    border: 1.5px solid #e2e8f0;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    color: #64748b;
+    display: flex;
+    gap: 12px;
+    font-size: 0.85rem;
+}
+
+.text-editor-tools i {
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.text-editor-tools i:hover {
+    color: #0d5365;
+}
+
+textarea {
+    border-radius: 0 0 8px 8px;
+    height: 80px;
+    resize: none;
+}
+
+/* ---------- Subclass block ---------- */
+.subclass-attributes {
+    background: #f1f5f9;
+    padding: 14px;
+    border-radius: 8px;
+    margin-top: 0.75rem;
+    border-left: 4px solid #0d5365;
+}
+
+/* ---------- Delete modal ---------- */
+.delete-content {
+    text-align: center;
+    padding: 10px 0 1rem;
+}
+
+.bin-icon-wrap {
+    width: 60px;
+    height: 60px;
+    background: #fee2e2;
+    color: #ef4444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1.25rem auto;
+    font-size: 1.5rem;
+}
+
+/* ---------- Modal actions ---------- */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1.25rem;
+}
+
+.centered {
+    justify-content: center !important;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+    background: #0d5365;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.15s;
+}
+
+.btn-primary:hover {
+    background: #1aa3bd;
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: #64748b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.15s;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .main-content {
+        padding: 20px 16px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}

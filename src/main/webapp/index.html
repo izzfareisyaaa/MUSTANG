@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Packages | X-PERT DETAILING</title>
+  <meta name="description" content="X-PERT Detailing Package Management">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Page header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .btn-create {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: .875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .2s;
+    }
+
+    .btn-create:hover {
+      background: var(--secondary);
+      transform: translateY(-1px);
+    }
+
+    /* Package grid */
+    .package-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* Package card */
+    .pkg-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .06);
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+    }
+
+    .pkg-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, .1);
+    }
+
+    .pkg-card.popular {
+      border: 2px solid var(--accent);
+    }
+
+    .pkg-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .pkg-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .popular-badge {
+      background: var(--accent);
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: .7rem;
+      font-weight: 700;
+    }
+
+    .pkg-action-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-edit-pkg {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      cursor: pointer;
+      background: #f8fafc;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+
+    .btn-edit-pkg:hover {
+      background: var(--primary-glow);
+      border-color: var(--primary);
+    }
+
+    .btn-del-pkg {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #fee2e2;
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+
+    .btn-del-pkg:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: .75rem;
+      font-size: .875rem;
+      color: var(--text-muted);
+    }
+
+    .feature-list li {
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feature-list li:first-child {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
+    .feature-list li i {
+      color: var(--success);
+      font-size: .75rem;
+    }
+
+    .more-link {
+      color: var(--secondary);
+      font-size: .8rem;
+      text-decoration: none;
+      margin-top: .75rem;
+      display: inline-block;
+      font-weight: 600;
+    }
+
+    .more-link:hover {
+      color: var(--primary);
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      z-index: 1000;
+      transition: .2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #fff;
+      width: min(500px, 92vw);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, .15);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-card-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .btn-close-x {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 2px 6px;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+
+    .btn-close-x:hover {
+      background: #f0f0f5;
+    }
+
+    .mform-group {
+      margin-bottom: 1rem;
+    }
+
+    .mform-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .mform-label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text-muted);
+    }
+
+    .mform-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--panel-border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: .875rem;
+      outline: none;
+      transition: border-color .15s;
+      background: #f8fafc;
+    }
+
+    .mform-control:focus {
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    textarea.mform-control {
+      height: 80px;
+      resize: none;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .editor-tools {
+      background: #f8fafc;
+      padding: 8px 10px;
+      border: 1.5px solid var(--panel-border);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+      font-size: .85rem;
+    }
+
+    .editor-tools i {
+      cursor: pointer;
+    }
+
+    .editor-tools i:hover {
+      color: var(--primary);
+    }
+
+    .subclass-block {
+      background: #f1f5f9;
+      padding: 14px;
+      border-radius: 8px;
+      margin-top: .75rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 1.25rem;
+    }
+
+    .btn-modal-submit {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s;
+    }
+
+    .btn-modal-submit:hover {
+      background: var(--secondary);
+    }
+
+    .btn-modal-cancel {
+      background: #f1f5f9;
+      color: var(--text-muted);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s;
+    }
+
+    .btn-modal-cancel:hover {
+      background: #e2e8f0;
+    }
+
+    /* Delete modal */
+    .delete-card .delete-content {
+      text-align: center;
+      padding: 10px 0 1rem;
+    }
+
+    .bin-icon-wrap {
+      width: 60px;
+      height: 60px;
+      background: #fee2e2;
+      color: var(--danger);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.25rem auto;
+      font-size: 1.5rem;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .centered {
+      justify-content: center !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-view" class="view active">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header" style="border:none;padding:0;cursor:pointer;transition:opacity .2s;"
+        onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
+        onclick="const u=JSON.parse(sessionStorage.getItem('currentUser')||'{}');window.location.href=u.role==='customer'?'viewUpdatecustacc.html':'viewUpdatestaffacc.html';">
+        <div class="mini-profile" style="width:100%;">
+          <div class="mini-avatar"><i class="fa-solid fa-user"></i></div>
+          <div
+            style="display:flex;flex-direction:column;justify-content:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+            <h4 id="sidebar-user-name" style="font-size:14px;margin:0;color:white;">User</h4>
+            <p id="sidebar-user-role" style="font-size:11px;opacity:.8;margin:0;text-transform:capitalize;color:white;">
+              Role</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" style="padding-top: 10px;">
+        <a href="#dashboard" class="nav-item role-staff active" data-target="dashboard">
+          <i class="fa-solid fa-gauge"></i> Dashboard
+        </a>
+
+        <div class="nav-section-title"
+          style="padding: 10px 15px 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 1px;">
+          Booking</div>
+        <a href="custBooking.html" class="nav-item role-customer">
+          <i class="fa-solid fa-calendar-check"></i> My Bookings
+        </a>
+        <a href="staffBooking.html" class="nav-item role-staff">
+          <i class="fa-solid fa-calendar-check"></i> Manage Bookings
+        </a>
+        <a href="index.html" class="nav-item">
+          <i class="fa-solid fa-box"></i> Package
+        </a>
+        <a href="vehicle.html" class="nav-item" data-target="vehicle">
+          <i class="fa-solid fa-car"></i> Vehicle
+        </a>
+        <a href="staffReport.html" class="nav-item role-staff">
+          <i class="fa-solid fa-chart-bar"></i> Report
+        </a>
+        <a href="custInvoice.html" class="nav-item role-customer">
+          <i class="fa-solid fa-file-lines"></i> Invoice
+        </a>
+        <a href="staffInvoice.html" class="nav-item role-staff">
+          <i class="fa-solid fa-file-lines"></i> Invoice
+        </a>
+
+        <a href="deleteCust.html" class="nav-item role-staff">
+          <i class="fa-solid fa-users-slash"></i> Manage Customer
+        </a>
+      </nav>
+
+      <div class="sidebar-footer" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
+        <button id="logout-btn" class="nav-item text-danger"
+          onclick="sessionStorage.removeItem('currentUser'); window.location.href='homepage.html';">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="page-container">
+
+        <div class="page-header">
+          <h1><i class="fa-solid fa-box" style="color:var(--primary);margin-right:10px;"></i>Explore Our Packages</h1>
+          <button class="btn-create" id="openCreate"><i class="fa-solid fa-plus"></i> Create Package</button>
+        </div>
+
+        <div class="package-grid" id="packageGrid"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- CREATE / EDIT MODAL -->
+  <div class="modal-overlay" id="packageModal">
+    <div class="modal-card">
+      <div class="modal-card-header">
+        <h2 id="modalTitle">Create New Package</h2>
+        <button class="btn-close-x" onclick="closeModal('packageModal')">✕</button>
+      </div>
+      <form class="modal-form" onsubmit="return false;">
+        <div class="mform-row">
+          <div class="mform-group">
+            <label class="mform-label">Entry Method</label>
+            <select class="mform-control" id="mainCat" onchange="toggleFormLogic()">
+              <option value="routine">Routine</option>
+              <option value="festive">Festive</option>
+            </select>
+          </div>
+          <div class="mform-group">
+            <label class="mform-label">Service Subclass</label>
+            <select class="mform-control" id="subClass" onchange="toggleFormLogic()">
+              <option value="wash">Wash</option>
+              <option value="polish">Polish</option>
+              <option value="coating">Coating</option>
+            </select>
+          </div>
+        </div>
+        <div class="mform-group">
+          <label class="mform-label">Package Name</label>
+          <input type="text" class="mform-control" id="pkgNameInput" placeholder="Enter name">
+        </div>
+
+        <div id="routineFields">
+          <div class="mform-row">
+            <div class="mform-group"><label class="mform-label">Price (RM)</label><input type="text" id="pkgPrice"
+                class="mform-control" placeholder="e.g. 50"></div>
+            <div class="mform-group"><label class="mform-label">Duration</label><input type="text" id="pkgDuration"
+                class="mform-control" placeholder="e.g. 3h"></div>
+          </div>
+          <div class="mform-group">
+            <label class="mform-label">Description</label>
+            <div class="editor-tools"><i class="fa-solid fa-bold"></i><i class="fa-solid fa-italic"></i><i
+                class="fa-solid fa-list"></i></div>
+            <textarea id="pkgDesc" class="mform-control" placeholder="Package details..."></textarea>
+          </div>
+        </div>
+
+        <div id="festiveFields" style="display:none;">
+          <div class="mform-group"><label class="mform-label">Festival Name</label><input type="text" id="pkgFestName"
+              class="mform-control" placeholder="e.g. Raya Promo"></div>
+          <div class="mform-row">
+            <div class="mform-group"><label class="mform-label">Start Date</label><input type="date" id="pkgStartDate"
+                class="mform-control"></div>
+            <div class="mform-group"><label class="mform-label">End Date</label><input type="date" id="pkgEndDate"
+                class="mform-control"></div>
+          </div>
+          <div class="mform-group"><label class="mform-label">Discount Rate (%)</label><input type="number"
+              id="pkgDiscount" class="mform-control" placeholder="20"></div>
+        </div>
+
+        <div class="subclass-block">
+          <div id="washAttr"> <label class="mform-label">Wash Type</label> <input type="text" id="pkgWashType"
+              class="mform-control" placeholder="e.g. Steam"></div>
+          <div id="polishAttr" style="display:none;"><label class="mform-label">Polish Level</label> <input
+              type="number" id="pkgPolishLevel" class="mform-control" placeholder="1-3"></div>
+          <div id="coatingAttr" style="display:none;"><label class="mform-label">Coating Type</label><input type="text"
+              id="pkgCoatingType" class="mform-control" placeholder="e.g. Ceramic"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel" onclick="closeModal('packageModal')">Cancel</button>
+          <button type="submit" class="btn-modal-submit" id="submitBtn">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DELETE MODAL -->
+  <div class="modal-overlay" id="deleteOverlay">
+    <div class="modal-card delete-card">
+      <div class="delete-content">
+        <h2 id="deleteTitle">Delete Package</h2>
+        <p style="color:var(--text-muted);margin-top:.5rem;">Are you sure? This action cannot be undone.</p>
+        <div class="bin-icon-wrap"><i class="fa-solid fa-trash-can"></i></div>
+      </div>
+      <div class="modal-actions centered">
+        <button class="btn-modal-cancel" onclick="closeModal('deleteOverlay')">Cancel</button>
+        <button id="confirmDeleteBtn" class="btn-danger"><i class="fa-solid fa-trash-can"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Default packages (used when sessionStorage is empty) ──────────
+    const DEFAULT_PACKAGES = [
+      {
+        id: 1, name: 'Package A - Car Wash', cat: 'routine', sub: 'wash', popular: false,
+        price: '35', duration: '30–45 minutes',
+        description: 'Exterior hand wash\nWheel cleaning\nWindow cleaning\nQuick dry\nTire shine',
+        subAttr: 'Steam', festivalName: '', startDate: '', endDate: '', discount: ''
+      },
+      {
+        id: 2, name: 'Package B - Interior Cleaning', cat: 'routine', sub: 'polish', popular: false,
+        price: '250', duration: '1 day',
+        description: 'Deep vacuum\nSeat shampooing\nDashboard & console detailing\nDoor panel cleaning\nOdor elimination',
+        subAttr: '2', festivalName: '', startDate: '', endDate: '', discount: ''
+      },
+      {
+        id: 3, name: 'Package C - Ceramic Coating', cat: 'festive', sub: 'coating', popular: true,
+        price: '300', duration: '1 day',
+        description: 'Paint decontamination\nCeramic coating application\nUV protection\nPaint correction',
+        subAttr: 'Ceramic', festivalName: 'Raya Promo', startDate: '', endDate: '', discount: '10'
+      }
+    ];
+
+    // ── State ─────────────────────────────────────────────────────────
+    let packages = JSON.parse(sessionStorage.getItem('xpert_packages') || 'null') || DEFAULT_PACKAGES;
+    let editingId = null;   // null = create mode, number = edit mode
+    let deletingId = null;
+
+    // ── Role setup ────────────────────────────────────────────────────
+    const _u = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+    document.getElementById('sidebar-user-name').textContent = _u.name || 'User';
+    document.getElementById('sidebar-user-role').textContent = _u.email || _u.role || 'guest';
+    const isStaff = _u.role !== 'customer';
+    if (!isStaff) {
+      document.querySelectorAll('.role-staff').forEach(el => el.style.display = 'none');
+      document.getElementById('openCreate').style.display = 'none';
+    } else {
+      document.querySelectorAll('.role-customer').forEach(el => el.style.display = 'none');
+    }
+
+    // ── Save to sessionStorage ────────────────────────────────────────
+    function persist() {
+      sessionStorage.setItem('xpert_packages', JSON.stringify(packages));
+    }
+
+    // ── Render grid ───────────────────────────────────────────────────
+    function renderGrid() {
+      const grid = document.getElementById('packageGrid');
+      if (!packages.length) {
+        grid.innerHTML = '<p style="color:var(--text-muted);padding:1rem;">No packages yet.</p>';
+        return;
+      }
+      grid.innerHTML = packages.map(p => {
+        const lines = (p.description || '').split('\n').filter(l => l.trim());
+        const featureItems = lines.map(l =>
+          `<li><i class="fa-solid fa-check"></i>${l.trim()}</li>`
+        ).join('');
+
+        const priceRow = p.cat === 'routine'
+          ? `<li>From RM ${p.price} &nbsp;·&nbsp; ${p.duration}</li>`
+          : `<li>${p.festivalName || 'Festive'} &nbsp;·&nbsp; ${p.discount ? p.discount + '% off' : ''}</li>`;
+
+        const badgeHtml = p.popular
+          ? `<span class="popular-badge"><i class="fa-solid fa-fire"></i> Popular</span>` : '';
+
+        const actionBtns = isStaff ? `
+        <div class="pkg-action-btns">
+          <button class="btn-edit-pkg" onclick="openUpdate(${p.id})"><i class="fa-solid fa-pencil"></i></button>
+          <button class="btn-del-pkg"  onclick="openDelete(${p.id})"><i class="fa-solid fa-trash-can"></i></button>
+        </div>` : '';
+
+        return `
+        <div class="pkg-card${p.popular ? ' popular' : ''}">
+          <div class="pkg-card-header">
+            <div class="header-main">
+              <div class="pkg-card-title">${p.name}</div>
+              ${badgeHtml}
+            </div>
+            ${actionBtns}
+          </div>
+          <ul class="feature-list">
+            ${priceRow}
+            ${featureItems}
+          </ul>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Modal helpers ─────────────────────────────────────────────────
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    function resetForm() {
+      document.getElementById('pkgNameInput').value = '';
+      document.getElementById('pkgPrice').value = '';
+      document.getElementById('pkgDuration').value = '';
+      document.getElementById('pkgDesc').value = '';
+      document.getElementById('pkgFestName').value = '';
+      document.getElementById('pkgStartDate').value = '';
+      document.getElementById('pkgEndDate').value = '';
+      document.getElementById('pkgDiscount').value = '';
+      document.getElementById('pkgWashType').value = '';
+      document.getElementById('pkgPolishLevel').value = '';
+      document.getElementById('pkgCoatingType').value = '';
+      document.getElementById('mainCat').value = 'routine';
+      document.getElementById('subClass').value = 'wash';
+      toggleFormLogic();
+    }
+
+    function toggleFormLogic() {
+      const cat = document.getElementById('mainCat').value;
+      const sub = document.getElementById('subClass').value;
+      document.getElementById('routineFields').style.display = cat === 'routine' ? 'block' : 'none';
+      document.getElementById('festiveFields').style.display = cat === 'festive' ? 'block' : 'none';
+      document.getElementById('washAttr').style.display = sub === 'wash' ? 'block' : 'none';
+      document.getElementById('polishAttr').style.display = sub === 'polish' ? 'block' : 'none';
+      document.getElementById('coatingAttr').style.display = sub === 'coating' ? 'block' : 'none';
+    }
+
+    // ── Open CREATE modal ─────────────────────────────────────────────
+    document.getElementById('openCreate').onclick = () => {
+      editingId = null;
+      document.getElementById('modalTitle').innerText = 'Create New Package';
+      document.getElementById('submitBtn').innerText = 'Create';
+      resetForm();
+      openModal('packageModal');
+    };
+
+    // ── Open EDIT modal ───────────────────────────────────────────────
+    function openUpdate(id) {
+      const p = packages.find(x => x.id === id);
+      if (!p) return;
+      editingId = id;
+      document.getElementById('modalTitle').innerText = 'Update Package';
+      document.getElementById('submitBtn').innerText = 'Save Changes';
+
+      document.getElementById('pkgNameInput').value = p.name;
+      document.getElementById('mainCat').value = p.cat;
+      document.getElementById('subClass').value = p.sub;
+      document.getElementById('pkgPrice').value = p.price || '';
+      document.getElementById('pkgDuration').value = p.duration || '';
+      document.getElementById('pkgDesc').value = p.description || '';
+      document.getElementById('pkgFestName').value = p.festivalName || '';
+      document.getElementById('pkgStartDate').value = p.startDate || '';
+      document.getElementById('pkgEndDate').value = p.endDate || '';
+      document.getElementById('pkgDiscount').value = p.discount || '';
+
+      // subclass attribute
+      document.getElementById('pkgWashType').value = p.sub === 'wash' ? (p.subAttr || '') : '';
+      document.getElementById('pkgPolishLevel').value = p.sub === 'polish' ? (p.subAttr || '') : '';
+      document.getElementById('pkgCoatingType').value = p.sub === 'coating' ? (p.subAttr || '') : '';
+
+      toggleFormLogic();
+      openModal('packageModal');
+    }
+
+    // ── SAVE (create or update) ───────────────────────────────────────
+    function savePackage() {
+      const name = document.getElementById('pkgNameInput').value.trim();
+      const cat = document.getElementById('mainCat').value;
+      const sub = document.getElementById('subClass').value;
+
+      if (!name) { alert('Please enter a package name.'); return; }
+
+      const subAttrEl = sub === 'wash' ? document.getElementById('pkgWashType')
+        : sub === 'polish' ? document.getElementById('pkgPolishLevel')
+          : document.getElementById('pkgCoatingType');
+
+      const data = {
+        name, cat, sub,
+        popular: editingId ? (packages.find(x => x.id === editingId)?.popular || false) : false,
+        price: document.getElementById('pkgPrice').value.trim(),
+        duration: document.getElementById('pkgDuration').value.trim(),
+        description: document.getElementById('pkgDesc').value.trim(),
+        subAttr: subAttrEl ? subAttrEl.value.trim() : '',
+        festivalName: document.getElementById('pkgFestName').value.trim(),
+        startDate: document.getElementById('pkgStartDate').value,
+        endDate: document.getElementById('pkgEndDate').value,
+        discount: document.getElementById('pkgDiscount').value.trim(),
+      };
+
+      if (editingId === null) {
+        // CREATE
+        data.id = Date.now();
+        packages.push(data);
+      } else {
+        // UPDATE
+        const idx = packages.findIndex(x => x.id === editingId);
+        if (idx !== -1) packages[idx] = { ...packages[idx], ...data };
+      }
+
+      persist();
+      renderGrid();
+      closeModal('packageModal');
+    }
+
+    // Wire submit button
+    document.getElementById('submitBtn').addEventListener('click', savePackage);
+
+    // ── Open DELETE modal ─────────────────────────────────────────────
+    function openDelete(id) {
+      deletingId = id;
+      const p = packages.find(x => x.id === id);
+      document.getElementById('deleteTitle').innerText = 'Delete ' + (p ? p.name : 'Package') + '?';
+      openModal('deleteOverlay');
+    }
+
+    // Wire delete confirm button
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+      if (deletingId !== null) {
+        packages = packages.filter(x => x.id !== deletingId);
+        deletingId = null;
+        persist();
+        renderGrid();
+      }
+      closeModal('deleteOverlay');
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────
+    toggleFormLogic();
+    renderGrid();
+  </script>
+</body>
+
+</html>

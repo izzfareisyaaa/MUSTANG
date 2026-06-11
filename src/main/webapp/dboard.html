@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-PERT Detailing | Booking Dashboard</title>
+    <meta name="description" content="X-PERT Detailing Premium Car AutoSpa Booking Management System">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Main App View -->
+    <div id="app-view" class="view active">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header" style="border: none; padding: 0; cursor: pointer; transition: opacity 0.2s;"
+                onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
+                onclick="const u = JSON.parse(sessionStorage.getItem('currentUser') || '{}'); window.location.href = u.role === 'customer' ? 'viewUpdatecustacc.html' : 'viewUpdatestaffacc.html';">
+                <div class="mini-profile" style="width: 100%;">
+                    <div class="mini-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div
+                        style="display: flex; flex-direction: column; justify-content: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                        <h4 id="sidebar-user-name" style="font-size: 14px; margin: 0; color: white;">User</h4>
+                        <p id="sidebar-user-role"
+                            style="font-size: 11px; opacity: 0.8; margin: 0; text-transform: capitalize; color: white;">
+                            Role</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" style="padding-top: 10px;">
+                <a href="#dashboard" class="nav-item role-staff active" data-target="dashboard">
+                    <i class="fa-solid fa-gauge"></i> Dashboard
+                </a>
+
+                <div class="nav-section-title"
+                    style="padding: 10px 15px 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 1px;">
+                    Booking</div>
+                <a href="custBooking.html" class="nav-item role-customer">
+                    <i class="fa-solid fa-calendar-check"></i> My Bookings
+                </a>
+                <a href="staffBooking.html" class="nav-item role-staff">
+                    <i class="fa-solid fa-calendar-check"></i> Manage Bookings
+                </a>
+                <a href="index.html" class="nav-item">
+                    <i class="fa-solid fa-box"></i> Package
+                </a>
+                <a href="vehicle.html" class="nav-item" data-target="vehicle">
+                    <i class="fa-solid fa-car"></i> Vehicle
+                </a>
+                <a href="staffReport.html" class="nav-item role-staff">
+                    <i class="fa-solid fa-chart-bar"></i> Report
+                </a>
+                <a href="custInvoice.html" class="nav-item role-customer">
+                    <i class="fa-solid fa-file-lines"></i> Invoice
+                </a>
+                <a href="staffInvoice.html" class="nav-item role-staff">
+                    <i class="fa-solid fa-file-lines"></i> Invoice
+                </a>
+
+                <a href="deleteCust.html" class="nav-item role-staff">
+                    <i class="fa-solid fa-users-slash"></i> Manage Customer
+                </a>
+            </nav>
+
+            <div class="sidebar-footer" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
+                <button id="logout-btn" class="nav-item text-danger"
+                    onclick="sessionStorage.removeItem('currentUser'); window.location.href='homepage.html';">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar glass-panel">
+                <div class="topbar-left">
+                    <button id="mobile-menu-btn" class="icon-btn hide-desktop">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 id="page-title">Dashboard</h2>
+                </div>
+                <div class="topbar-right">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search bookings...">
+                    </div>
+                    <button class="icon-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <div class="user-profile-menu">
+                        <img id="topbar-avatar" src="https://ui-avatars.com/api/?name=User&background=0d5365&color=fff"
+                            alt="User Profile" class="avatar" style="cursor:pointer;"
+                            onclick="const U=JSON.parse(sessionStorage.getItem('currentUser')||'{}'); window.location.href=u.role==='customer'?'viewUpdatecustacc.html':'viewUpdatestaffacc.html';">
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-container">
+
+                <!-- Dashboard page -->
+                <div id="page-dashboard" class="page active">
+
+                    <!-- Welcome banner (customer only) -->
+                    <div id="welcome-banner"
+                        style="display:none; background:linear-gradient(135deg,#0e4b5c,#1aa3bd); border-radius:16px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; color:#fff;">
+                        <p
+                            style="font-size:.8rem;opacity:.85;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">
+                            Welcome back 👋</p>
+                        <h2 id="welcome-name" style="font-size:1.5rem;font-weight:700;margin:0;">Mike Davis!</h2>
+                        <p style="font-size:.875rem;opacity:.8;margin-top:4px;">What should we do today ?</p>
+                    </div>
+
+                    <!-- ═══ STAFF DASHBOARD ═══ -->
+                    <div id="staff-dashboard">
+                        <div class="metrics-grid">
+                            <div class="metric-card glass-panel">
+                                <div class="metric-icon bg-primary-glow">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h3>Today's Bookings</h3>
+                                    <p class="metric-value">14</p>
+                                    <span class="trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +2 from
+                                        yesterday</span>
+                                </div>
+                            </div>
+                            <div class="metric-card glass-panel">
+                                <div class="metric-icon bg-accent-glow">
+                                    <i class="fa-solid fa-car"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h3>Vehicles Serviced</h3>
+                                    <p class="metric-value">128</p>
+                                    <span class="trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +12% this
+                                        month</span>
+                                </div>
+                            </div>
+                            <div class="metric-card glass-panel">
+                                <div class="metric-icon bg-success-glow">
+                                    <i class="fa-solid fa-dollar-sign"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h3>Revenue</h3>
+                                    <p class="metric-value">RM 4,250</p>
+                                    <span class="trend positive"><i class="fa-solid fa-arrow-trend-up"></i> +5.4% this
+                                        week</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-grid">
+                            <div class="recent-bookings glass-panel">
+                                <div class="panel-header">
+                                    <h3>Recent Bookings</h3>
+                                    <button class="btn btn-sm btn-outline">View All</button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Client</th>
+                                                <th>Vehicle</th>
+                                                <th>Package</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="client-info"><img
+                                                            src="https://ui-avatars.com/api/?name=John+Doe&background=222&color=fff"
+                                                            alt="John"><span>John Doe</span></div>
+                                                </td>
+                                                <td>BMW M4</td>
+                                                <td>Ceramic Coating</td>
+                                                <td><span class="status-badge pending">Pending</span></td>
+                                                <td><button class="icon-btn small"><i
+                                                            class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="client-info"><img
+                                                            src="https://ui-avatars.com/api/?name=Sarah+Smith&background=222&color=fff"
+                                                            alt="Sarah"><span>Sarah Smith</span></div>
+                                                </td>
+                                                <td>Porsche 911</td>
+                                                <td>Premium Wash</td>
+                                                <td><span class="status-badge in-progress">In Progress</span></td>
+                                                <td><button class="icon-btn small"><i
+                                                            class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="client-info"><img
+                                                            src="https://ui-avatars.com/api/?name=Mike+Davis&background=222&color=fff"
+                                                            alt="Mike"><span>Mike Davis</span></div>
+                                                </td>
+                                                <td>Tesla Model S</td>
+                                                <td>Interior Detail</td>
+                                                <td><span class="status-badge completed">Completed</span></td>
+                                                <td><button class="icon-btn small"><i
+                                                            class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ═══ END STAFF DASHBOARD ═══ -->
+
+                    <!-- ═══ CUSTOMER DASHBOARD ═══ -->
+                    <div id="customer-dashboard" style="display:none;">
+
+                        <!-- Customer Stats -->
+                        <div class="metrics-grid">
+                            <div class="metric-card glass-panel">
+                                <div class="metric-icon bg-primary-glow">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h3>My Bookings</h3>
+                                    <p class="metric-value">4</p>
+                                    <span class="trend positive"><i class="fa-solid fa-arrow-trend-up"></i> 3
+                                        completed</span>
+                                </div>
+                            </div>
+                            <div class="metric-card glass-panel">
+                                <div class="metric-icon bg-accent-glow">
+                                    <i class="fa-solid fa-car"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h3>My Vehicles</h3>
+                                    <p class="metric-value">1</p>
+                                    <span class="trend">Plate: XYZ789</span>
+                                </div>
+                            </div>
+                            <div class="metric-card glass-panel">
+                                <div class="metric-icon bg-success-glow">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h3>Invoices</h3>
+                                    <p class="metric-value">4</p>
+                                    <span class="trend positive"><i class="fa-solid fa-check"></i> All paid</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="glass-panel" style="padding:1.5rem;margin:1.5rem 0;">
+                            <h3 style="margin-bottom:1rem;font-size:1rem;font-weight:700;">Quick Actions</h3>
+                            <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                                <a href="custBooking.html"
+                                    style="flex:1;min-width:160px;background:var(--primary);color:#fff;border-radius:12px;padding:1rem 1.25rem;text-decoration:none;display:flex;align-items:center;gap:10px;font-weight:600;font-size:.875rem;transition:background .2s;"
+                                    onmouseover="this.style.background='var(--secondary)'"
+                                    onmouseout="this.style.background='var(--primary)'">
+                                    <i class="fa-solid fa-calendar-plus" style="font-size:1.1rem;"></i> New Booking
+                                </a>
+                                <a href="custInvoice.html"
+                                    style="flex:1;min-width:160px;background:#f1f5f9;color:var(--text-main);border-radius:12px;padding:1rem 1.25rem;text-decoration:none;display:flex;align-items:center;gap:10px;font-weight:600;font-size:.875rem;border:1px solid var(--panel-border);transition:background .2s;"
+                                    onmouseover="this.style.background='#e2e8f0'"
+                                    onmouseout="this.style.background='#f1f5f9'">
+                                    <i class="fa-solid fa-file-lines"
+                                        style="font-size:1.1rem;color:var(--primary);"></i> View Invoices
+                                </a>
+                                <a href="vehicle.html"
+                                    style="flex:1;min-width:160px;background:#f1f5f9;color:var(--text-main);border-radius:12px;padding:1rem 1.25rem;text-decoration:none;display:flex;align-items:center;gap:10px;font-weight:600;font-size:.875rem;border:1px solid var(--panel-border);transition:background .2s;"
+                                    onmouseover="this.style.background='#e2e8f0'"
+                                    onmouseout="this.style.background='#f1f5f9'">
+                                    <i class="fa-solid fa-car" style="font-size:1.1rem;color:var(--primary);"></i> My
+                                    Vehicles
+                                </a>
+                                <a href="index.html"
+                                    style="flex:1;min-width:160px;background:#f1f5f9;color:var(--text-main);border-radius:12px;padding:1rem 1.25rem;text-decoration:none;display:flex;align-items:center;gap:10px;font-weight:600;font-size:.875rem;border:1px solid var(--panel-border);transition:background .2s;"
+                                    onmouseover="this.style.background='#e2e8f0'"
+                                    onmouseout="this.style.background='#f1f5f9'">
+                                    <i class="fa-solid fa-box" style="font-size:1.1rem;color:var(--primary);"></i>
+                                    Explore Packages
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Recent Bookings -->
+                        <div class="glass-panel" style="padding:1.5rem;">
+                            <div class="panel-header" style="margin-bottom:1rem;">
+                                <h3 style="font-size:1rem;font-weight:700;">My Recent Bookings</h3>
+                                <a href="custBooking.html" class="btn btn-sm btn-outline">View All</a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Package</th>
+                                            <th>Vehicle</th>
+                                            <th>Status</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>10/1/2026</td>
+                                            <td>Package D - Interior Cleaning</td>
+                                            <td>XYZ789</td>
+                                            <td><span class="status-badge completed">Completed</span></td>
+                                            <td style="font-weight:700;">RM 525.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>8/1/2026</td>
+                                            <td>Package C - Waxing</td>
+                                            <td>XYZ789</td>
+                                            <td><span class="status-badge completed">Completed</span></td>
+                                            <td style="font-weight:700;">RM 120.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6/1/2026</td>
+                                            <td>Package B - Polishing</td>
+                                            <td>XYZ789</td>
+                                            <td><span class="status-badge completed">Completed</span></td>
+                                            <td style="font-weight:700;">RM 350.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5/12/2025</td>
+                                            <td>Package A - Car Wash</td>
+                                            <td>XYZ789</td>
+                                            <td><span class="status-badge completed">Completed</span></td>
+                                            <td style="font-weight:700;">RM 50.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- ═══ END CUSTOMER DASHBOARD ═══ -->
+                </div>
+                <!-- END #page-dashboard -->
+
+                <!-- Generic Placeholder Page -->
+                <div id="page-placeholder" class="page">
+                    <div class="placeholder-content glass-panel">
+                        <i class="fa-solid fa-wrench large-icon"></i>
+                        <h2 id="placeholder-title">Page Title</h2>
+                        <p>This module is currently under development.</p>
+                        <button class="btn btn-primary mt-4"
+                            onclick="document.querySelector('[data-target=\'dashboard\']').click()">
+                            Return to Dashboard
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Apply session user data immediately after app.js runs
+        (function () {
+            const u = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            const name = u.name || 'User';
+            const email = u.email || '';
+            const role = u.role || 'staff';
+            
+            if (role === 'owner') {
+                window.location.replace('ownerInterface.html');
+                return;
+            }
+
+            // Sidebar name/role
+            const sn = document.getElementById('sidebar-user-name');
+            const sr = document.getElementById('sidebar-user-role');
+            if (sn) sn.textContent = name;
+            if (sr) sr.textContent = email;
+
+            // Topbar avatar
+            const av = document.getElementById('topbar-avatar');
+            if (av) av.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name) + '&background=0d5365&color=fff&bold=true';
+
+            // Role-based nav visibility
+            document.querySelectorAll('.role-staff').forEach(el => el.style.display = role === 'customer' ? 'none' : '');
+            document.querySelectorAll('.role-customer').forEach(el => el.style.display = role === 'customer' ? '' : 'none');
+
+            // Welcome banner for customer
+            const banner = document.getElementById('welcome-banner');
+            const wname = document.getElementById('welcome-name');
+            if (banner && role === 'customer') {
+                banner.style.display = 'block';
+                if (wname) wname.textContent = 'Welcome, ' + name + '!';
+            }
+        })();
+    </script>
+</body>
+
+</html>

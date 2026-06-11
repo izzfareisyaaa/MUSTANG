@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Invoices | X-PERT DETAILING</title>
+  <meta name="description" content="X-PERT Detailing Customer Invoice View"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
+    .page-header h1 { font-size: 1.6rem; font-weight: 700; color: var(--text-main); }
+    .page-header p  { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+
+    .inv-table-wrap { background: var(--panel-bg); border-radius: var(--border-radius); border: 1px solid var(--panel-border); overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,.06); }
+    .inv-table-wrap table { width: 100%; border-collapse: collapse; }
+    .inv-table-wrap thead tr { border-bottom: 2px solid var(--panel-border); background: #f8fafc; }
+    .inv-table-wrap thead th { padding: 12px 18px; font-size: 0.75rem; font-weight: 700; letter-spacing: .07em; color: var(--text-muted); text-transform: uppercase; text-align: left; }
+    .inv-table-wrap tbody tr { border-bottom: 1px solid var(--panel-border); transition: background .12s; }
+    .inv-table-wrap tbody tr:last-child { border-bottom: none; }
+    .inv-table-wrap tbody tr:hover { background: #f1f5f9; }
+    .inv-table-wrap td { padding: 13px 18px; font-size: 0.875rem; vertical-align: middle; }
+
+    .inv-no { display: flex; align-items: center; gap: 8px; font-family: 'Courier New', monospace; font-size: 0.8rem; font-weight: 600; color: var(--secondary); }
+    .cust-name { font-weight: 600; font-size: 0.875rem; }
+    .cust-phone { color: var(--text-muted); font-size: 0.75rem; margin-top: 2px; }
+    .amount-cell { font-weight: 700; color: var(--text-main); }
+
+    .inv-actions { display: flex; gap: 8px; }
+    .btn-view-inv { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background .15s; }
+    .btn-view-inv:hover { background: var(--secondary); }
+    .btn-download-inv { background: #475569; color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background .15s; }
+    .btn-download-inv:hover { background: #334155; }
+
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .invoice-modal { background: #fff; border-radius: 14px; width: min(720px, 94vw); max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+
+    /* Modal header */
+    .modal-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px 28px 16px; border-bottom: 1px solid var(--panel-border); position: sticky; top: 0; background: #fff; z-index: 10; }
+    .modal-header-title { font-size: 18px; font-weight: 700; }
+    .btn-modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); padding: 2px 6px; border-radius: 6px; transition: background .15s; }
+    .btn-modal-close:hover { background: #f0f0f5; color: var(--text-main); }
+
+    /* Printable invoice */
+    #invoice-print-area { padding: 32px 36px 24px; }
+    .company-header { text-align: center; padding-bottom: 24px; border-bottom: 1px solid var(--panel-border); margin-bottom: 28px; }
+    .company-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; }
+    .logo-line { width: 120px; height: 2px; background: var(--primary); margin: 4px auto; }
+    .company-address { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-top: 10px; }
+    .company-owner { font-size: 13px; color: var(--text-muted); }
+    .inv-title { font-size: 22px; font-weight: 900; letter-spacing: .5px; margin-bottom: 20px; color: var(--primary); }
+    .date-row { display: flex; gap: 60px; margin-bottom: 20px; }
+    .date-block .date-label { font-size: 13px; color: var(--text-muted); }
+    .date-block .date-value { font-size: 15px; font-weight: 600; margin-top: 2px; }
+    .bill-box { border: 1px solid var(--panel-border); border-radius: 8px; padding: 18px 20px; margin-bottom: 20px; }
+    .bill-box-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--primary); }
+    .bill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .bill-field-label { font-size: 12px; color: var(--text-muted); }
+    .bill-field-value { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .status-badge-completed { display: inline-block; background: #d4edda; color: #155724; border-radius: 6px; padding: 3px 12px; font-size: 12px; font-weight: 700; margin-top: 2px; }
+    .service-table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+    .service-table th { text-align: left; padding: 10px 14px; font-size: 13px; font-weight: 700; color: var(--text-main); border-bottom: 1px solid var(--panel-border); }
+    .service-table th:last-child { text-align: right; }
+    .service-table td { padding: 14px 14px; font-size: 14px; vertical-align: top; }
+    .service-table td:last-child { text-align: right; font-weight: 600; }
+    .total-row { display: flex; justify-content: flex-end; border-top: 2px solid var(--primary); padding-top: 12px; margin-top: 4px; gap: 60px; }
+    .total-label { font-size: 15px; font-weight: 800; }
+    .total-value { font-size: 15px; font-weight: 800; color: var(--primary); }
+    .payment-status-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; text-align: center; padding: 16px 20px; margin-top: 20px; }
+    .payment-status-label { font-size: 13px; color: var(--text-muted); }
+    .payment-status-value { font-size: 18px; font-weight: 800; color: #16a34a; margin-top: 4px; }
+    .invoice-footer-note { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 22px; line-height: 1.7; }
+    .modal-footer-bar { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 28px 22px; border-top: 1px solid var(--panel-border); position: sticky; bottom: 0; background: #fff; }
+    .btn-close-modal { background: #f0f0f5; color: var(--text-main); border: none; border-radius: 8px; padding: 10px 28px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s; }
+    .btn-close-modal:hover { background: #e0e0ea; }
+    .btn-print-inv { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: background .15s; }
+    .btn-print-inv:hover { background: var(--secondary); }
+
+    @media print {
+      body * { visibility: hidden !important; }
+      #invoice-print-area, #invoice-print-area * { visibility: visible !important; }
+      #invoice-print-area { position: fixed !important; inset: 0 !important; padding: 40px !important; background: #fff !important; }
+      .modal-footer-bar, .modal-header-bar { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+<div id="app-view" class="view active">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header" style="border:none;padding:0;cursor:pointer;transition:opacity .2s;"
+         onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
+         onclick="window.location.href='viewUpdatecustacc.html'">
+      <div class="mini-profile" style="width:100%;">
+        <div class="mini-avatar"><i class="fa-solid fa-user"></i></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+          <h4 id="sidebar-user-name" style="font-size:14px;margin:0;color:white;">User</h4>
+          <p  id="sidebar-user-role" style="font-size:11px;opacity:.8;margin:0;text-transform:capitalize;color:white;">Role</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" style="padding-top:10px;">
+      <a href="dboard.html" class="nav-item">
+        <i class="fa-solid fa-gauge"></i> Dashboard
+      </a>
+      <div class="nav-section-title" style="padding:10px 15px 0;font-size:.75rem;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:1px;">Booking</div>
+      <a href="custBooking.html" class="nav-item">
+        <i class="fa-solid fa-calendar-check"></i> My Bookings
+      </a>
+      <a href="dboard.html#package" class="nav-item">
+        <i class="fa-solid fa-box"></i> Package
+      </a>
+      <a href="vehicle.html" class="nav-item">
+        <i class="fa-solid fa-car"></i> Vehicle
+      </a>
+      <a href="custInvoice.html" class="nav-item active">
+        <i class="fa-solid fa-file-lines"></i> Invoice
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item text-danger" onclick="sessionStorage.removeItem('currentUser'); window.location.href='homepage.html';">
+        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-container">
+
+      <div class="page-header">
+        <div>
+          <h1><i class="fa-solid fa-file-lines" style="color:var(--primary);margin-right:10px;"></i>My Invoices</h1>
+          <p>View and download invoices for your completed services</p>
+        </div>
+      </div>
+
+      <div class="inv-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Invoice No.</th>
+              <th>Invoice Date</th>
+              <th>Customer</th>
+              <th>Vehicle</th>
+              <th>Package</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="invoice-tbody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- INVOICE DETAILS MODAL -->
+<div class="modal-overlay" id="view-modal">
+  <div class="invoice-modal">
+    <div class="modal-header-bar">
+      <div class="modal-header-title">Invoice Details</div>
+      <button class="btn-modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="invoice-print-area">
+      <div class="company-header">
+        <div class="company-logo">
+          <svg width="110" height="40" viewBox="0 0 220 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 45 Q50 20 90 18 Q130 16 160 22 L185 30 Q200 34 205 42 L210 48 Q205 52 195 52 Q190 42 178 42 Q166 42 161 52 L75 52 Q70 42 58 42 Q46 42 41 52 Q28 52 25 48 Z" fill="#0d5365"/>
+            <circle cx="58" cy="52" r="9" fill="none" stroke="#0d5365" stroke-width="4"/>
+            <circle cx="178" cy="52" r="9" fill="none" stroke="#0d5365" stroke-width="4"/>
+            <circle cx="58" cy="52" r="3" fill="#0d5365"/>
+            <circle cx="178" cy="52" r="3" fill="#0d5365"/>
+            <text x="110" y="68" text-anchor="middle" font-size="11" font-weight="800" letter-spacing="3" fill="#0d5365" font-family="Inter, sans-serif">X-PERT DETAILING</text>
+          </svg>
+        </div>
+        <div class="logo-line"></div>
+        <div class="company-address">JC111, Jalan BMU 2, Bandar Baru Merlimau Utara<br/>77300 Merlimau, Melaka</div>
+        <div class="company-owner">Owner: Mr. Ab Rahman Bin Ahmat</div>
+      </div>
+      <div class="inv-title" id="modal-inv-title">INVOICE #—</div>
+      <div class="date-row">
+        <div class="date-block"><div class="date-label">Invoice Date</div><div class="date-value" id="modal-inv-date">—</div></div>
+        <div class="date-block"><div class="date-label">Booking Date</div><div class="date-value" id="modal-booking-date">—</div></div>
+      </div>
+      <div class="bill-box">
+        <div class="bill-box-title">Bill To</div>
+        <div class="bill-grid">
+          <div><div class="bill-field-label">Customer Name</div><div class="bill-field-value" id="modal-cust-name">—</div></div>
+          <div><div class="bill-field-label">Phone Number</div><div class="bill-field-value" id="modal-cust-phone">—</div></div>
+          <div><div class="bill-field-label">Vehicle Plate</div><div class="bill-field-value" id="modal-vehicle">—</div></div>
+          <div><div class="bill-field-label">Booking Status</div><div><span class="status-badge-completed">Completed</span></div></div>
+        </div>
+      </div>
+      <table class="service-table">
+        <thead><tr><th>Service Package</th><th>Description</th><th>Amount</th></tr></thead>
+        <tbody><tr><td id="modal-package">—</td><td id="modal-description" style="color:var(--text-muted);">—</td><td id="modal-amount">—</td></tr></tbody>
+      </table>
+      <div class="total-row">
+        <span class="total-label">Total Amount</span>
+        <span class="total-value" id="modal-total">—</span>
+      </div>
+      <div class="payment-status-box">
+        <div class="payment-status-label">Payment Status</div>
+        <div class="payment-status-value"><i class="fa-solid fa-check-circle"></i> Paid</div>
+      </div>
+      <div class="invoice-footer-note">
+        Thank you for choosing X-PERT DETAILING!<br/>
+        For inquiries, please contact us through our service center.
+      </div>
+    </div>
+    <div class="modal-footer-bar">
+      <button class="btn-close-modal" onclick="closeModal()">Close</button>
+      <button class="btn-print-inv" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Invoice</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Load user
+  (function() {
+    const u = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+    document.getElementById('sidebar-user-name').textContent = u.name || 'Customer';
+    document.getElementById('sidebar-user-role').textContent = u.email || 'customer';
+  })();
+
+  const pkgDesc = {
+    "Package A - Car Wash":          "Essential exterior cleaning for your vehicle",
+    "Package B - Polishing":         "Full paint polishing to restore shine",
+    "Package C - Waxing":            "Protective wax coating for lasting gloss",
+    "Package D - Interior Cleaning": "Deep interior vacuum and sanitisation",
+    "Package E - Ceramic Coating":   "Long-lasting ceramic paint protection",
+  };
+
+  const invoices = [
+    { no:"INV-2025-0800", date:"5/12/2025",  bookingDate:"5/12/2025",  customer:"Mike Davis", phone:"0123456787", vehicle:"XYZ789", package:"Package A - Car Wash",          amount:50.00  },
+    { no:"INV-2025-0850", date:"6/1/2026",   bookingDate:"6/1/2026",   customer:"Mike Davis", phone:"0123456787", vehicle:"XYZ789", package:"Package B - Polishing",          amount:350.00 },
+    { no:"INV-2025-0875", date:"8/1/2026",   bookingDate:"8/1/2026",   customer:"Mike Davis", phone:"0123456787", vehicle:"XYZ789", package:"Package C - Waxing",             amount:120.00 },
+    { no:"INV-2026-0890", date:"10/1/2026",  bookingDate:"10/1/2026",  customer:"Mike Davis", phone:"0123456787", vehicle:"XYZ789", package:"Package D - Interior Cleaning",  amount:525.00 },
+  ];
+
+  function fmt(n){ return "RM " + n.toFixed(2); }
+
+  const tbody = document.getElementById("invoice-tbody");
+  invoices.forEach((inv, i) => {
+    tbody.innerHTML += `
+      <tr>
+        <td><div class="inv-no"><i class="fa-regular fa-file-lines"></i>${inv.no}</div></td>
+        <td>${inv.date}</td>
+        <td><div class="cust-name">${inv.customer}</div><div class="cust-phone">${inv.phone}</div></td>
+        <td>${inv.vehicle}</td>
+        <td>${inv.package}</td>
+        <td><span class="amount-cell">${fmt(inv.amount)}</span></td>
+        <td>
+          <div class="inv-actions">
+            <button class="btn-view-inv" onclick="openModal(${i})"><i class="fa-solid fa-eye"></i> View</button>
+            <button class="btn-download-inv" onclick="downloadInv(${i})"><i class="fa-solid fa-download"></i> Download</button>
+          </div>
+        </td>
+      </tr>`;
+  });
+
+  function openModal(i) {
+    const inv = invoices[i];
+    document.getElementById("modal-inv-title").textContent    = "INVOICE #" + inv.no;
+    document.getElementById("modal-inv-date").textContent     = inv.date;
+    document.getElementById("modal-booking-date").textContent = inv.bookingDate;
+    document.getElementById("modal-cust-name").textContent    = inv.customer;
+    document.getElementById("modal-cust-phone").textContent   = inv.phone;
+    document.getElementById("modal-vehicle").textContent      = inv.vehicle;
+    document.getElementById("modal-package").textContent      = inv.package;
+    document.getElementById("modal-description").textContent  = pkgDesc[inv.package] || "Professional detailing service";
+    document.getElementById("modal-amount").textContent       = fmt(inv.amount);
+    document.getElementById("modal-total").textContent        = fmt(inv.amount);
+    document.getElementById("view-modal").classList.add("open");
+  }
+  function closeModal() { document.getElementById("view-modal").classList.remove("open"); }
+  function downloadInv(i) { openModal(i); setTimeout(() => window.print(), 400); }
+  document.getElementById("view-modal").addEventListener("click", function(e){ if(e.target===this) closeModal(); });
+</script>
+</body>
+</html>

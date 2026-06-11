@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports | X-PERT DETAILING</title>
+  <meta name="description" content="X-PERT Detailing Staff Reports" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Page header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: .9rem;
+      margin-top: 4px;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Tab group */
+    .tab-group {
+      display: flex;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1.5px solid var(--panel-border);
+      background: #fff;
+    }
+
+    .tab-btn {
+      padding: 9px 22px;
+      font-size: .875rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background: #fff;
+      color: var(--text-muted);
+      transition: background .15s, color .15s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Generate btn */
+    .btn-gen {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: .875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all .2s;
+    }
+
+    .btn-gen:hover {
+      background: var(--secondary);
+      transform: translateY(-1px);
+    }
+
+    /* Print btn */
+    .print-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn-print {
+      background: #fff;
+      color: var(--text-main);
+      border: 1.5px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 9px 20px;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: background .15s;
+    }
+
+    .btn-print:hover {
+      background: #f1f5f9;
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      color: var(--text-muted);
+      gap: 14px;
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--panel-border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--text-muted);
+    }
+
+    .empty-text {
+      font-size: 15px;
+    }
+
+    /* Report content hidden by default */
+    #report-content {
+      display: none;
+    }
+
+    /* Stat cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media(max-width:900px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width:500px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--border-radius);
+      padding: 1.25rem 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .06);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stat-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .stat-icon.blue {
+      background: rgba(58, 123, 213, .12);
+      color: #3a7bd5;
+    }
+
+    .stat-icon.green {
+      background: var(--success-glow);
+      color: var(--success);
+    }
+
+    .stat-icon.yellow {
+      background: var(--accent-glow);
+      color: var(--accent);
+    }
+
+    .stat-icon.purple {
+      background: rgba(155, 93, 229, .12);
+      color: #9b5de5;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text-main);
+    }
+
+    .stat-label {
+      font-size: .875rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .stat-sub {
+      font-size: .75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Mid grid */
+    .mid-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media(max-width:700px) {
+      .mid-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .section-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .06);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
+
+    /* Status breakdown */
+    .status-row-r {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .status-row-r:last-child {
+      margin-bottom: 0;
+    }
+
+    .status-row-r.completed {
+      background: #f0fdf4;
+    }
+
+    .status-row-r.inprogress {
+      background: #eff6ff;
+    }
+
+    .status-row-r.pending {
+      background: #fffbeb;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 10px;
+      display: inline-block;
+    }
+
+    .status-dot.green {
+      background: #22c55e;
+    }
+
+    .status-dot.blue {
+      background: #3b82f6;
+    }
+
+    .status-dot.yellow {
+      background: #f59e0b;
+    }
+
+    .status-label-r {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      font-size: .875rem;
+    }
+
+    .status-count-r {
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .status-count-r.green {
+      color: #22c55e;
+    }
+
+    .status-count-r.blue {
+      color: #3b82f6;
+    }
+
+    .status-count-r.yellow {
+      color: #f59e0b;
+    }
+
+    /* Task cards */
+    .task-mini-card {
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .task-mini-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .task-mini-card.total {
+      background: #eef6f9;
+    }
+
+    .task-mini-card.done {
+      background: #f0fdf4;
+    }
+
+    .task-mini-label {
+      font-size: .75rem;
+      color: var(--text-muted);
+    }
+
+    .task-mini-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-top: 4px;
+      color: var(--text-main);
+    }
+
+    .task-mini-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .task-mini-icon.teal {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .task-mini-icon.green {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    /* Services table */
+    .services-card {
+      margin-bottom: 1.5rem;
+    }
+
+    .service-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 0;
+      color: var(--text-muted);
+      gap: 10px;
+    }
+
+    .service-empty-icon {
+      font-size: 2.5rem;
+      opacity: .35;
+    }
+
+    .rpt-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .rpt-table th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--panel-border);
+    }
+
+    .rpt-table td {
+      padding: 11px 14px;
+      font-size: .875rem;
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .rpt-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rpt-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    .bar-wrap {
+      background: #f1f5f9;
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--primary);
+    }
+
+    /* Booking details */
+    .details-card {
+      margin-bottom: 1rem;
+    }
+
+    .badge-r {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .badge-r.completed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge-r.inprogress {
+      background: #cce5ff;
+      color: #004085;
+    }
+
+    .badge-r.pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    @media print {
+
+      .sidebar,
+      .top-controls,
+      .print-bar {
+        display: none !important;
+      }
+
+      .main-content {
+        margin-left: 0 !important;
+      }
+
+      body {
+        background: #fff !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-view" class="view active">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header" style="border:none;padding:0;cursor:pointer;transition:opacity .2s;"
+        onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
+        onclick="window.location.href='viewUpdatestaffacc.html'">
+        <div class="mini-profile" style="width:100%;">
+          <div class="mini-avatar"><i class="fa-solid fa-user"></i></div>
+          <div
+            style="display:flex;flex-direction:column;justify-content:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+            <h4 id="sidebar-user-name" style="font-size:14px;margin:0;color:white;">User</h4>
+            <p id="sidebar-user-role" style="font-size:11px;opacity:.8;margin:0;text-transform:capitalize;color:white;">
+              Role</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" style="padding-top: 10px;">
+        <a href="#dashboard" class="nav-item role-staff active" data-target="dashboard">
+          <i class="fa-solid fa-gauge"></i> Dashboard
+        </a>
+        <a href="staffBooking.html" class="nav-item role-staff">
+          <i class="fa-solid fa-calendar-check"></i> Manage Bookings
+        </a>
+        <a href="index.html" class="nav-item">
+          <i class="fa-solid fa-box"></i> Package
+        </a>
+        <a href="vehicle.html" class="nav-item" data-target="vehicle">
+          <i class="fa-solid fa-car"></i> Vehicle
+        </a>
+        <a href="staffReport.html" class="nav-item role-staff">
+          <i class="fa-solid fa-chart-bar"></i> Report
+        </a>
+        <a href="staffInvoice.html" class="nav-item role-staff">
+          <i class="fa-solid fa-file-lines"></i> Invoice
+        </a>
+
+        <a href="deleteCust.html" class="nav-item role-staff">
+          <i class="fa-solid fa-users-slash"></i> Manage Customer
+        </a>
+      </nav>
+
+      <div class="sidebar-footer" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
+        <button id="logout-btn" class="nav-item text-danger"
+          onclick="sessionStorage.removeItem('currentUser'); window.location.href='homepage.html';">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="page-container">
+
+        <!-- Page header -->
+        <div class="page-header">
+          <div>
+            <h1><i class="fa-solid fa-chart-bar" style="color:var(--primary);margin-right:10px;"></i><span
+                id="report-title">Weekly Report</span></h1>
+            <p id="report-period">Report Period: 10 May – 16 May 2026</p>
+          </div>
+          <div class="top-controls">
+            <div class="tab-group">
+              <button class="tab-btn active" id="tab-weekly" onclick="setMode('weekly')">Weekly</button>
+              <button class="tab-btn" id="tab-monthly" onclick="setMode('monthly')">Monthly</button>
+            </div>
+            <button class="btn-gen" onclick="generateReport()">
+              <i class="fa-solid fa-file-arrow-down"></i> Generate Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state">
+          <div class="empty-state glass-panel" style="padding:3rem;">
+            <div class="empty-icon"><i class="fa-solid fa-chart-pie"></i></div>
+            <div class="empty-text">Please generate a report to view the details.</div>
+          </div>
+        </div>
+
+        <!-- Report Content -->
+        <div id="report-content">
+          <div class="print-bar">
+            <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
+          </div>
+
+          <!-- Summary Cards -->
+          <div class="cards-grid">
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon blue"><i class="fa-solid fa-calendar-days"></i></div>
+                <div class="stat-value" id="card-bookings">0</div>
+              </div>
+              <div class="stat-label">Total Bookings</div>
+              <div class="stat-sub" id="card-bookings-sub">This week</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-value" id="card-completion">0%</div>
+              </div>
+              <div class="stat-label">Completion Rate</div>
+              <div class="stat-sub" id="card-completion-sub">0 of 0 completed</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon yellow"><i class="fa-solid fa-star"></i></div>
+                <div class="stat-value" id="card-rating">0.0</div>
+              </div>
+              <div class="stat-label">Average Rating</div>
+              <div class="stat-sub" id="card-rating-sub">0 reviews</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon purple"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <div class="stat-value" id="card-revenue">RM0</div>
+              </div>
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-sub" id="card-revenue-sub">From 0 customers</div>
+            </div>
+          </div>
+
+          <!-- Mid Grid -->
+          <div class="mid-grid">
+            <div class="section-card">
+              <div class="section-title">Booking Status Breakdown</div>
+              <div class="status-row-r completed">
+                <div class="status-label-r"><span class="status-dot green"></span> Completed</div>
+                <span class="status-count-r green" id="status-completed">0</span>
+              </div>
+              <div class="status-row-r inprogress">
+                <div class="status-label-r"><span class="status-dot blue"></span> In Progress</div>
+                <span class="status-count-r blue" id="status-inprogress">0</span>
+              </div>
+              <div class="status-row-r pending">
+                <div class="status-label-r"><span class="status-dot yellow"></span> Pending</div>
+                <span class="status-count-r yellow" id="status-pending">0</span>
+              </div>
+            </div>
+            <div class="section-card">
+              <div class="section-title">Task Performance</div>
+              <div class="task-mini-card total">
+                <div>
+                  <div class="task-mini-label">Total Tasks</div>
+                  <div class="task-mini-value" id="task-total">0</div>
+                </div>
+                <div class="task-mini-icon teal"><i class="fa-solid fa-list-check"></i></div>
+              </div>
+              <div class="task-mini-card done">
+                <div>
+                  <div class="task-mini-label">Completed Tasks</div>
+                  <div class="task-mini-value" id="task-done">0</div>
+                </div>
+                <div class="task-mini-icon green"><i class="fa-solid fa-check"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Most Popular Services -->
+          <div class="section-card services-card">
+            <div class="section-title">Most Popular Services</div>
+            <div id="services-body">
+              <div class="service-empty">
+                <div class="service-empty-icon"><i class="fa-solid fa-box-open"></i></div>
+                <div>No bookings yet</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Details -->
+          <div class="section-card details-card">
+            <div class="section-title" id="booking-details-title">Weekly Booking Details</div>
+            <div id="booking-details-body">
+              <div class="service-empty">
+                <div class="service-empty-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+                <div>No bookings found</div>
+              </div>
+            </div>
+          </div>
+        </div><!-- end report-content -->
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Load user
+    (function () {
+      const u = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+      document.getElementById('sidebar-user-name').textContent = u.name || 'Staff';
+      document.getElementById('sidebar-user-role').textContent = u.email || 'staff';
+    })();
+
+    let currentMode = 'weekly';
+
+    const weeklyData = {
+      period: '10 May – 16 May 2026', bookings: 7, completed: 4, inProgress: 2, pending: 1,
+      totalTasks: 12, doneTasks: 9, avgRating: 4.3, reviews: 4, revenue: 1145, customers: 7,
+      services: [
+        { name: 'Package A - Car Wash', count: 3, pct: 43 },
+        { name: 'Package C - Waxing', count: 2, pct: 29 },
+        { name: 'Package B - Polishing', count: 1, pct: 14 },
+        { name: 'Package D - Interior Cleaning', count: 1, pct: 14 },
+      ],
+      bookingDetails: [
+        { date: '10/5/2026', customer: 'Mike Davis', vehicle: 'XYZ789', package: 'Package A - Car Wash', status: 'Completed', amount: 'RM 50.00' },
+        { date: '11/5/2026', customer: 'David Tan', vehicle: 'GHI789', package: 'Package C - Waxing', status: 'Completed', amount: 'RM 120.00' },
+        { date: '12/5/2026', customer: 'Emma Wilson', vehicle: 'MER456', package: 'Package B - Polishing', status: 'In Progress', amount: 'RM 350.00' },
+        { date: '13/5/2026', customer: 'Alex Tan', vehicle: 'ABC001', package: 'Package A - Car Wash', status: 'Completed', amount: 'RM 50.00' },
+        { date: '14/5/2026', customer: 'Sarah Lim', vehicle: 'DEF222', package: 'Package C - Waxing', status: 'Completed', amount: 'RM 120.00' },
+        { date: '15/5/2026', customer: 'Ahmad Rizal', vehicle: 'GJK998', package: 'Package D - Interior Cleaning', status: 'In Progress', amount: 'RM 525.00' },
+        { date: '16/5/2026', customer: 'Nurul Ain', vehicle: 'WXZ345', package: 'Package A - Car Wash', status: 'Pending', amount: 'RM 50.00' },
+      ]
+    };
+
+    const monthlyData = {
+      period: 'May 2026', bookings: 28, completed: 20, inProgress: 5, pending: 3,
+      totalTasks: 45, doneTasks: 38, avgRating: 4.5, reviews: 18, revenue: 6750, customers: 22,
+      services: [
+        { name: 'Package A - Car Wash', count: 12, pct: 43 },
+        { name: 'Package C - Waxing', count: 7, pct: 25 },
+        { name: 'Package E - Ceramic Coating', count: 4, pct: 14 },
+        { name: 'Package B - Polishing', count: 3, pct: 11 },
+        { name: 'Package D - Interior Cleaning', count: 2, pct: 7 },
+      ],
+      bookingDetails: [
+        { date: '1/5/2026', customer: 'Alex Tan', vehicle: 'ABC001', package: 'Package A - Car Wash', status: 'Completed', amount: 'RM 50.00' },
+        { date: '3/5/2026', customer: 'Emma Wilson', vehicle: 'MER456', package: 'Package E - Ceramic Coating', status: 'Completed', amount: 'RM 1250.00' },
+        { date: '5/5/2026', customer: 'David Tan', vehicle: 'GHI789', package: 'Package C - Waxing', status: 'Completed', amount: 'RM 120.00' },
+        { date: '8/5/2026', customer: 'Mike Davis', vehicle: 'XYZ789', package: 'Package D - Interior Cleaning', status: 'Completed', amount: 'RM 525.00' },
+        { date: '10/5/2026', customer: 'Sarah Lim', vehicle: 'DEF222', package: 'Package A - Car Wash', status: 'Completed', amount: 'RM 50.00' },
+        { date: '12/5/2026', customer: 'Nurul Ain', vehicle: 'WXZ345', package: 'Package B - Polishing', status: 'In Progress', amount: 'RM 350.00' },
+        { date: '14/5/2026', customer: 'Ahmad Rizal', vehicle: 'GJK998', package: 'Package A - Car Wash', status: 'Pending', amount: 'RM 50.00' },
+      ]
+    };
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('tab-weekly').classList.toggle('active', mode === 'weekly');
+      document.getElementById('tab-monthly').classList.toggle('active', mode === 'monthly');
+      document.getElementById('report-title').textContent = mode === 'weekly' ? 'Weekly Report' : 'Monthly Report';
+      const d = mode === 'weekly' ? weeklyData : monthlyData;
+      document.getElementById('report-period').textContent = 'Report Period: ' + d.period;
+      document.getElementById('report-content').style.display = 'none';
+      document.getElementById('empty-state').style.display = 'block';
+    }
+
+    function generateReport() {
+      const d = currentMode === 'weekly' ? weeklyData : monthlyData;
+      const label = currentMode === 'weekly' ? 'week' : 'month';
+
+      document.getElementById('report-period').textContent = 'Report Period: ' + d.period;
+      document.getElementById('card-bookings').textContent = d.bookings;
+      document.getElementById('card-bookings-sub').textContent = 'This ' + label;
+      const pct = d.bookings > 0 ? Math.round((d.completed / d.bookings) * 100) : 0;
+      document.getElementById('card-completion').textContent = pct + '%';
+      document.getElementById('card-completion-sub').textContent = d.completed + ' of ' + d.bookings + ' completed';
+      document.getElementById('card-rating').textContent = d.avgRating.toFixed(1);
+      document.getElementById('card-rating-sub').textContent = d.reviews + ' reviews this ' + label;
+      document.getElementById('card-revenue').textContent = 'RM' + d.revenue.toLocaleString();
+      document.getElementById('card-revenue-sub').textContent = 'From ' + d.customers + ' customers';
+      document.getElementById('status-completed').textContent = d.completed;
+      document.getElementById('status-inprogress').textContent = d.inProgress;
+      document.getElementById('status-pending').textContent = d.pending;
+      document.getElementById('task-total').textContent = d.totalTasks;
+      document.getElementById('task-done').textContent = d.doneTasks;
+
+      // Services
+      const sBody = document.getElementById('services-body');
+      sBody.innerHTML = d.services.length === 0
+        ? `<div class="service-empty"><div class="service-empty-icon"><i class="fa-solid fa-box-open"></i></div><div>No bookings this ${label}</div></div>`
+        : `<table class="rpt-table">
+           <thead><tr><th>#</th><th>Service Package</th><th>Bookings</th><th style="width:160px;">Usage</th><th style="text-align:right;">Share</th></tr></thead>
+           <tbody>${d.services.map((s, i) => `
+             <tr>
+               <td style="color:var(--text-muted);font-weight:600;">${i + 1}</td>
+               <td style="font-weight:600;">${s.name}</td>
+               <td>${s.count}</td>
+               <td><div class="bar-wrap"><div class="bar-fill" style="width:${s.pct}%"></div></div></td>
+               <td style="text-align:right;font-weight:700;color:var(--primary);">${s.pct}%</td>
+             </tr>`).join('')}
+           </tbody>
+         </table>`;
+
+      // Booking details
+      document.getElementById('booking-details-title').textContent = currentMode === 'weekly' ? 'Weekly Booking Details' : 'Monthly Booking Details';
+      const badgeCls = { 'Completed': 'completed', 'In Progress': 'inprogress', 'Pending': 'pending' };
+      const dBody = document.getElementById('booking-details-body');
+      dBody.innerHTML = d.bookingDetails.length === 0
+        ? `<div class="service-empty"><div class="service-empty-icon"><i class="fa-solid fa-calendar-xmark"></i></div><div>No bookings found</div></div>`
+        : `<table class="rpt-table">
+           <thead><tr><th>Date</th><th>Customer</th><th>Vehicle</th><th>Package</th><th>Status</th><th style="text-align:right;">Amount</th></tr></thead>
+           <tbody>${d.bookingDetails.map(b => `
+             <tr>
+               <td style="color:var(--text-muted);">${b.date}</td>
+               <td style="font-weight:600;">${b.customer}</td>
+               <td style="font-family:'Courier New',monospace;font-size:.8rem;">${b.vehicle}</td>
+               <td>${b.package}</td>
+               <td><span class="badge-r ${badgeCls[b.status]}">${b.status}</span></td>
+               <td style="text-align:right;font-weight:700;">${b.amount}</td>
+             </tr>`).join('')}
+           </tbody>
+         </table>`;
+
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('report-content').style.display = 'block';
+    }
+  </script>
+</body>
+
+</html>

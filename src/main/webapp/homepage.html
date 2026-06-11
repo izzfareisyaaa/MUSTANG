@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X-PERT DETAILING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Gabriela&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── Reset & Variables ─────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --teal-dark: #0F4C5C;
+      --teal-darker: #0A3440;
+      --teal-accent: #17a2b8;
+      --teal-light: #20c997;
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-400: #9ca3af;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --green: #28a745;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-serif: 'Gabriela', serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: #fff;
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: var(--font-body);
+      border: none;
+      background: none;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ── Utilities ─────────────────────────────────────── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    /* ── Sticky Nav ────────────────────────────────────── */
+    #navbar {
+      background: var(--teal-dark);
+      border-bottom: 1px solid var(--teal-darker);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.15em;
+      color: #fff;
+    }
+
+    .nav-logo span {
+      color: var(--teal-accent);
+    }
+
+    .nav-search {
+      flex: 1;
+      max-width: 26rem;
+      margin: 0 2rem;
+      position: relative;
+    }
+
+    .nav-search svg {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d1d5db;
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    .nav-search input {
+      width: 100%;
+      padding: 0.5rem 1rem 0.5rem 2.5rem;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 0.5rem;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .nav-search input::placeholder {
+      color: #d1d5db;
+    }
+
+    .nav-search input:focus {
+      border-color: rgba(255, 255, 255, .4);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, .1);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-links button {
+      color: rgba(255, 255, 255, .9);
+      font-size: 0.95rem;
+      transition: color .2s;
+    }
+
+    .nav-links button:hover {
+      color: #fff;
+    }
+
+    .nav-links .btn-home {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn-signin {
+      color: #fff !important;
+      font-weight: 600 !important;
+    }
+
+    .btn-signup {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #fff;
+      color: var(--teal-dark) !important;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600 !important;
+      transition: background .2s !important;
+    }
+
+    .btn-signup:hover {
+      background: #f3f4f6 !important;
+    }
+
+    .btn-signup svg {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    /* ── Hero ──────────────────────────────────────────── */
+    #home {
+      position: relative;
+      height: 600px;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .9;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0, 0, 0, .7), rgba(0, 0, 0, .5) 60%, transparent);
+    }
+
+    .hero-pulse {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(23, 162, 184, .18), transparent, rgba(23, 162, 184, .18));
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: .5
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-text {
+      color: #fff;
+      max-width: 42rem;
+    }
+
+    .hero-title-wrap {
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 9vw, 7rem);
+      letter-spacing: .08em;
+      line-height: 1;
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-title .glow {
+      position: absolute;
+      inset: 0;
+      color: var(--teal-accent);
+      filter: blur(20px);
+      opacity: .5;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    .hero-title .main {
+      position: relative;
+      background: linear-gradient(90deg, var(--teal-accent), var(--teal-light), var(--teal-accent));
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientMove 4s linear infinite;
+    }
+
+    @keyframes gradientMove {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    .hero-divider {
+      height: 3px;
+      width: 8rem;
+      margin-top: .25rem;
+      background: linear-gradient(to right, var(--teal-accent), transparent);
+      border-radius: 9999px;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    .hero-subs {
+      margin-bottom: 2rem;
+    }
+
+    .hero-subs p {
+      font-size: clamp(1.5rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: .05em;
+      line-height: 1.3;
+    }
+
+    .hero-company {
+      font-size: 1.2rem;
+      letter-spacing: .2em;
+      color: #d1d5db;
+      margin-bottom: 2.5rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-company .glow2 {
+      position: absolute;
+      inset: 0;
+      color: var(--teal-accent);
+      filter: blur(8px);
+      opacity: .4;
+    }
+
+    .hero-cta {
+      position: relative;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(to right, var(--teal-dark), var(--teal-darker));
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: .5rem;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      transition: transform .3s, box-shadow .3s;
+    }
+
+    .hero-cta:hover {
+      transform: scale(1.05);
+      box-shadow: 0 20px 40px rgba(15, 76, 92, .5);
+    }
+
+    .hero-cta svg {
+      width: 1.4rem;
+      height: 1.4rem;
+      animation: pulse 2s infinite;
+    }
+
+    .hero-cta .arrow {
+      transition: transform .3s;
+    }
+
+    .hero-cta:hover .arrow {
+      transform: translateX(6px);
+    }
+
+    .hero-badges {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .badge-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .badge-icon.teal {
+      background: linear-gradient(135deg, var(--teal-accent), #138496);
+      box-shadow: 0 8px 20px rgba(23, 162, 184, .4);
+    }
+
+    .badge-icon.green {
+      background: linear-gradient(135deg, var(--teal-light), var(--teal-accent));
+      box-shadow: 0 8px 20px rgba(32, 201, 151, .4);
+    }
+
+    .badge-icon svg {
+      width: 1.4rem;
+      height: 1.4rem;
+      color: #fff;
+    }
+
+    .badge-label {
+      font-size: .75rem;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .badge-value {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── About ─────────────────────────────────────────── */
+    #about {
+      padding: 4rem 0;
+      background: #fff;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: .75rem;
+    }
+
+    .section-header p {
+      font-size: 1.1rem;
+      color: var(--gray-600);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 56rem;
+      margin: 0 auto 3rem;
+    }
+
+    .about-card {
+      background: linear-gradient(135deg, var(--teal-dark), #0a3642);
+      border-radius: .75rem;
+      padding: 2rem;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(15, 76, 92, .3);
+    }
+
+    .about-card-head {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-card-icon {
+      background: rgba(255, 255, 255, .2);
+      padding: .75rem;
+      border-radius: .5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-card-icon svg {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .about-card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .about-card p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .about-desc {
+      text-align: center;
+      max-width: 44rem;
+      margin: 0 auto;
+      color: var(--gray-600);
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+
+    /* ── Featured Services ─────────────────────────────── */
+    #services {
+      padding: 4rem 0;
+      background: var(--gray-50);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .service-card {
+      background: #fff;
+      border-radius: .5rem;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+      transition: box-shadow .3s;
+    }
+
+    .service-card:hover {
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+    }
+
+    .service-card-img {
+      height: 16rem;
+      overflow: hidden;
+    }
+
+    .service-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .3s;
+    }
+
+    .service-card:hover .service-card-img img {
+      transform: scale(1.05);
+    }
+
+    .service-card-body {
+      padding: 1.5rem;
+    }
+
+    .service-card-body h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: .5rem;
+    }
+
+    .service-card-body .subtitle {
+      font-size: 1rem;
+      color: var(--gray-700);
+      margin-bottom: .5rem;
+    }
+
+    .service-card-body p {
+      color: var(--gray-600);
+    }
+
+    /* ── Packages ──────────────────────────────────────── */
+    #book {
+      padding: 4rem 0;
+      background: #fff;
+    }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .pkg-card {
+      background: #fff;
+      border: 2px solid #e5e7eb;
+      border-radius: .75rem;
+      overflow: hidden;
+      transition: border-color .3s, box-shadow .3s;
+    }
+
+    .pkg-card:hover {
+      border-color: var(--teal-accent);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, .1);
+    }
+
+    .pkg-header {
+      position: relative;
+      height: 12rem;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .pkg-header-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+    }
+
+    .pkg-header-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+    .pkg-cat {
+      display: inline-block;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      background: rgba(255, 255, 255, .2);
+      padding: .25rem .6rem;
+      border-radius: .25rem;
+      margin-bottom: .5rem;
+    }
+
+    .pkg-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .pkg-price {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: .25rem;
+    }
+
+    .pkg-duration {
+      font-size: .8rem;
+      opacity: .9;
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+    }
+
+    .pkg-duration svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .pkg-body {
+      padding: 1.25rem;
+    }
+
+    .pkg-features {
+      list-style: none;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .pkg-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+      font-size: .85rem;
+      color: var(--gray-700);
+    }
+
+    .pkg-features li svg {
+      width: 1rem;
+      height: 1rem;
+      color: var(--green);
+      flex-shrink: 0;
+      margin-top: .1rem;
+    }
+
+    .btn-book {
+      width: 100%;
+      padding: .65rem;
+      border-radius: .5rem;
+      background: linear-gradient(to right, var(--teal-accent), #138496);
+      color: #fff;
+      font-weight: 600;
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      transition: box-shadow .2s, transform .2s;
+    }
+
+    .btn-book:hover {
+      box-shadow: 0 8px 20px rgba(23, 162, 184, .4);
+      transform: scale(1.03);
+    }
+
+    .btn-book svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .info-banner {
+      margin-top: 3rem;
+      background: linear-gradient(to right, rgba(15, 76, 92, .08), rgba(32, 201, 151, .08));
+      border-left: 4px solid var(--teal-dark);
+      border-radius: .5rem;
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .info-banner-icon {
+      background: var(--teal-dark);
+      border-radius: 50%;
+      padding: .75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .info-banner-icon svg {
+      width: 1.4rem;
+      height: 1.4rem;
+      color: #fff;
+    }
+
+    .info-banner h4 {
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: .4rem;
+    }
+
+    .info-banner p {
+      color: var(--gray-600);
+      font-size: .95rem;
+    }
+
+
+
+    /* ── CTA Section ───────────────────────────────────── */
+    #cta {
+      padding: 4rem 0;
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-image: url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1400&q=80');
+    }
+
+    .cta-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 44rem;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .cta-inner h2 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .cta-inner p {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, .9);
+      margin-bottom: 2rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .btn-cta-primary {
+      background: #fff;
+      color: var(--teal-accent);
+      padding: .75rem 2rem;
+      border-radius: .5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      transition: background .2s;
+    }
+
+    .btn-cta-primary:hover {
+      background: #f3f4f6;
+    }
+
+    .btn-cta-primary svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    .btn-cta-secondary {
+      background: transparent;
+      border: 2px solid #fff;
+      color: #fff;
+      padding: .75rem 2rem;
+      border-radius: .5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background .2s;
+    }
+
+    .btn-cta-secondary:hover {
+      background: rgba(255, 255, 255, .1);
+    }
+
+    /* ── Footer ────────────────────────────────────────── */
+    footer {
+      background: var(--teal-dark);
+      color: #fff;
+      padding: 3rem 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: .15em;
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand span {
+      color: var(--teal-accent);
+    }
+
+    .footer-tagline {
+      color: var(--gray-400);
+      font-size: .9rem;
+    }
+
+    .footer-col h3 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    .footer-col ul li {
+      color: var(--gray-400);
+    }
+
+    .footer-col ul li button,
+    .footer-col ul li a {
+      color: var(--gray-400);
+      transition: color .2s;
+      font-size: .9rem;
+    }
+
+    .footer-col ul li button:hover,
+    .footer-col ul li a:hover {
+      color: #fff;
+    }
+
+    .footer-contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+      color: var(--gray-400);
+      font-size: .9rem;
+      margin-bottom: .6rem;
+    }
+
+    .footer-contact-item svg {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+      margin-top: .15rem;
+    }
+
+    .footer-contact-item a {
+      color: var(--gray-400);
+      transition: color .2s;
+    }
+
+    .footer-contact-item a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, .1);
+      padding-top: 2rem;
+      text-align: center;
+      color: var(--gray-400);
+      font-size: .9rem;
+    }
+
+    /* ── Modal ─────────────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: .75rem;
+      max-width: 44rem;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      background: var(--teal-dark);
+      color: #fff;
+      padding: 1.25rem 1.5rem;
+      border-radius: .75rem .75rem 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      color: #fff;
+      padding: .25rem;
+      border-radius: .25rem;
+      transition: background .2s;
+      display: flex;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, .2);
+    }
+
+    .modal-close svg {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: .5rem .75rem;
+      border: 1px solid #d1d5db;
+      border-radius: .5rem;
+      font-family: var(--font-body);
+      font-size: .9rem;
+      color: var(--gray-900);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--teal-accent);
+      box-shadow: 0 0 0 3px rgba(23, 162, 184, .15);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: .75rem;
+      padding-top: 1.25rem;
+    }
+
+    .btn-cancel {
+      padding: .5rem 1.5rem;
+      border: 1px solid #d1d5db;
+      color: var(--gray-700);
+      border-radius: .5rem;
+      font-family: var(--font-body);
+      transition: background .2s;
+    }
+
+    .btn-cancel:hover {
+      background: var(--gray-50);
+    }
+
+    .btn-submit {
+      padding: .5rem 1.5rem;
+      background: var(--teal-dark);
+      color: #fff;
+      border-radius: .5rem;
+      font-family: var(--font-body);
+      font-weight: 600;
+      transition: background .2s;
+    }
+
+    .btn-submit:hover {
+      background: var(--teal-darker);
+    }
+
+    /* ── SVG Icon helpers ──────────────────────────────── */
+    .icon {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: middle;
+    }
+
+    .icon-lg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    /* ── Responsive (basic) ────────────────────────────── */
+    @media (max-width: 1024px) {
+      .packages-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-search {
+        display: none;
+      }
+
+      .nav-links {
+        gap: .75rem;
+      }
+
+      .about-grid,
+      .services-grid,
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .packages-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .packages-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-badges {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAVBAR ──────────────────────────────────────────── -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="scrollTo('home')">
+        X<span>-</span>PERT DETAILING
+      </div>
+      <div class="nav-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search services..." />
+      </div>
+      <nav class="nav-links">
+        <button class="btn-home" onclick="scrollTo('home')">Home</button>
+        <button onclick="scrollTo('services')">Catalog</button>
+        <button onclick="scrollTo('book')">Book Now</button>
+        <button onclick="scrollTo('footer')">Contact Us</button>
+        <a href="login.html" class="btn-signin" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">Sign In</a>
+        <a href="createCustAcc.html" class="btn-signup" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; cursor: pointer;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <line x1="19" y1="8" x2="19" y2="14" />
+            <line x1="22" y1="11" x2="16" y2="11" />
+          </svg>
+          Sign Up
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── HERO ────────────────────────────────────────────── -->
+  <section id="home">
+    <img class="hero-bg" src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1600&q=80" alt="Sports Car" />
+    <div class="hero-overlay"></div>
+    <div class="hero-pulse"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-title-wrap">
+          <div class="hero-title">
+            <span class="glow">DETAILING</span>
+            <span class="main">DETAILING</span>
+          </div>
+          <div class="hero-divider"></div>
+        </div>
+        <div class="hero-subs">
+          <p>Excellence. Precision.</p>
+          <p>Perfection. Passion.</p>
+        </div>
+        <p class="hero-company">
+          <span class="glow2">X-PERT DETAILING</span>
+          <span style="position:relative;">X-PERT DETAILING</span>
+        </p>
+        <button class="hero-cta" onclick="scrollTo('services')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+          Explore Premium Services
+          <svg class="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M5 12h14m-7-7 7 7-7 7" />
+          </svg>
+        </button>
+        <div class="hero-badges">
+          <div class="badge">
+            <div class="badge-icon teal">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+            </div>
+            <div>
+              <div class="badge-label">Premium</div>
+              <div class="badge-value">Quality Service</div>
+            </div>
+          </div>
+          <div class="badge">
+            <div class="badge-icon green">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff" stroke="#fff" stroke-width="1">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </div>
+            <div>
+              <div class="badge-label">Rated</div>
+              <div class="badge-value">5 Star Reviews</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="container">
+      <div class="section-header">
+        <h2>About Us</h2>
+        <p>X-PERT DETAILING — Excellence in Car Care</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="about-card-head">
+            <div class="about-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" style="width:2rem;height:2rem">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+            </div>
+            <h3>Our Vision</h3>
+          </div>
+          <p>To establish detailing services as a recognized professional career in the future.</p>
+        </div>
+        <div class="about-card">
+          <div class="about-card-head">
+            <div class="about-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" style="width:2rem;height:2rem">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+            </div>
+            <h3>Our Mission</h3>
+          </div>
+          <p>To ensure that every car entering X-Pert Detailing shop leaves in a clean and like-new condition.</p>
+        </div>
+      </div>
+      <p class="about-desc">At X-PERT DETAILING, we combine passion with precision to deliver exceptional car care
+        services. Our team of skilled professionals is dedicated to restoring and maintaining your vehicle's pristine
+        condition, ensuring every detail meets the highest standards of quality.</p>
+    </div>
+  </section>
+
+  <!-- ── FEATURED SERVICES ────────────────────────────────── -->
+  <section id="services">
+    <div class="container">
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-card-img">
+            <img src="https://images.unsplash.com/photo-1611288875785-55d49d13c2c6?w=800&q=80" alt="Car Wash" />
+          </div>
+          <div class="service-card-body">
+            <h3>Car Wash</h3>
+            <p class="subtitle">Bringing Back That Showroom Shine.</p>
+            <p>Quick, reliable, and thorough cleaning for a fresher-looking ride.</p>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-card-img">
+            <img src="https://images.unsplash.com/photo-1565689157206-0fddef7589a2?w=800&q=80" alt="Restoration" />
+          </div>
+          <div class="service-card-body">
+            <h3>Restoration</h3>
+            <p class="subtitle">Restoring Classics, Reviving Legends.</p>
+            <p>Restoring vehicles to their original beauty and performance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SERVICE PACKAGES ─────────────────────────────────── -->
+  <section id="book">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Service Packages</h2>
+        <p>Wide range of professional detailing services</p>
+      </div>
+      <div class="packages-grid" id="packagesGrid">
+        <!-- Injected by JS -->
+      </div>
+      <div class="info-banner">
+        <div class="info-banner-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+        </div>
+        <div>
+          <h4>Professional Detailing Services</h4>
+          <p>All our services are performed by certified professionals using premium products and equipment. Prices vary
+            based on vehicle size and condition. Contact us for a detailed quote tailored to your needs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ── CTA ──────────────────────────────────────────────── -->
+  <section id="cta">
+    <div class="cta-overlay"></div>
+    <div class="cta-inner">
+      <h2>Ready to Transform Your Car?</h2>
+      <p>Book your appointment today and experience the X-PERT difference</p>
+      <div class="cta-buttons">
+        <button class="btn-cta-primary" onclick="openModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          Book Service
+        </button>
+        <button class="btn-cta-secondary" onclick="scrollTo('footer')">Contact Us</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ───────────────────────────────────────────── -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">X<span>-</span>PERT DETAILING</div>
+          <p class="footer-tagline">Premium car detailing and maintenance services</p>
+        </div>
+        <div class="footer-col">
+          <h3>Services</h3>
+          <ul>
+            <li><button onclick="scrollTo('services')">Car Detailing</button></li>
+            <li><button onclick="scrollTo('services')">Ceramic Coating</button></li>
+            <li><button onclick="scrollTo('services')">Paint Protection</button></li>
+            <li><button onclick="scrollTo('services')">Interior Cleaning</button></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><button onclick="scrollTo('about')">About Us</button></li>
+            <li><button onclick="openModal()">Book Now</button></li>
+            <li><button onclick="scrollTo('footer')">Contact</button></li>
+            <li><button onclick="alert('FAQ coming soon!')">FAQ</button></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <div class="footer-contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            <a href="mailto:info@xpertdetailing.com">info@xpertdetailing.com</a>
+          </div>
+          <div class="footer-contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.17H6.6a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.7a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            <a href="tel:+60123456789">+60 12-345 6789</a>
+          </div>
+          <div class="footer-contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span>JC111, Jalan BMU 2,<br>Bandar Baru Merlimau Utara,<br>77300 Merlimau, Melaka</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 X-PERT DETAILING. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── BOOKING MODAL ─────────────────────────────────────── -->
+  <div class="modal-backdrop" id="bookingModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Book Your Appointment</h3>
+        <button class="modal-close" onclick="closeModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="bookingForm" onsubmit="submitBooking(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" required placeholder="Your name" />
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" required placeholder="012-345-6789" />
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" required placeholder="your.email@example.com" />
+            </div>
+            <div class="form-group">
+              <label>Vehicle Model</label>
+              <input type="text" placeholder="e.g., Honda Civic" />
+            </div>
+            <div class="form-group">
+              <label>Service Package *</label>
+              <select required id="packageSelect">
+                <option value="">Select a package</option>
+                <option>Car Washing — RM35–80</option>
+                <option>Polishing — RM280–440</option>
+                <option>Waxing — RM60–180</option>
+                <option>Interior Cleaning — RM250–800</option>
+                <option>Ceramic Coating — RM300–2200</option>
+                <option>Protective Film — RM1800–7000</option>
+                <option>Paintless Dent Repair — RM250–800</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Preferred Date *</label>
+              <input type="date" required id="dateInput" />
+            </div>
+            <div class="form-group">
+              <label>Preferred Time *</label>
+              <select required>
+                <option value="">Select time</option>
+                <option>09:00 AM</option>
+                <option>10:00 AM</option>
+                <option>11:00 AM</option>
+                <option>12:00 PM</option>
+                <option>02:00 PM</option>
+                <option>03:00 PM</option>
+                <option>04:00 PM</option>
+                <option>05:00 PM</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Additional Notes</label>
+              <textarea rows="3" placeholder="Any special requests or concerns..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button type="submit" class="btn-submit">Submit Booking</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── Data ─────────────────────────────────────────────── */
+    const packages = [
+      {
+        name: "Car Washing", priceRange: "RM35 – RM80", duration: "30–45 min", category: "Basic",
+        features: ["Exterior hand wash", "Foam wash treatment", "Wheel & tire cleaning", "Window cleaning", "Door jambs cleaning"],
+        bg: "https://images.unsplash.com/photo-1694678505383-676d78ea3b96?w=600&q=70"
+      },
+      {
+        name: "Polishing", priceRange: "RM280 – RM440", duration: "3–4 hours", category: "Premium",
+        features: ["Paint correction", "Swirl mark removal", "Scratch removal", "High-gloss finish", "Professional grade polish"],
+        bg: "https://images.unsplash.com/photo-1708805282695-ef186db20192?w=600&q=70"
+      },
+      {
+        name: "Waxing", priceRange: "RM60 – RM180", duration: "1–2 hours", category: "Protection",
+        features: ["Premium carnauba wax", "Paint protection", "Enhanced shine", "UV protection", "Water repellent"],
+        bg: "https://images.unsplash.com/photo-1549664524-117ce7a8083b?w=600&q=70"
+      },
+      {
+        name: "Interior Cleaning", priceRange: "RM250 – RM800", duration: "2–4 hours", category: "Deep Clean",
+        features: ["Deep vacuum cleaning", "Leather conditioning", "Dashboard detailing", "Carpet shampooing", "Odor elimination"],
+        bg: "https://images.unsplash.com/photo-1656077885491-3922185f3932?w=600&q=70"
+      },
+      {
+        name: "Ceramic Coating", priceRange: "RM300 – RM2200", duration: "1–2 days", category: "Premium Protection",
+        features: ["9H hardness coating", "Hydrophobic effect", "2–5 years protection", "Enhanced gloss", "Chemical resistant"],
+        bg: "https://images.unsplash.com/photo-1572359249699-5ced96364f59?w=600&q=70"
+      },
+      {
+        name: "Protective Film", priceRange: "RM1800 – RM7000", duration: "2–3 days", category: "Ultimate Protection",
+        features: ["Paint protection film (PPF)", "Self-healing technology", "Scratch & stone chip protection", "UV resistant", "Custom fit installation"],
+        bg: "https://images.unsplash.com/photo-1597904721546-e19190d60bb5?w=600&q=70"
+      },
+      {
+        name: "Paintless Dent Repair", priceRange: "RM250 – RM800", duration: "1–3 hours", category: "Restoration",
+        features: ["No paint required", "Hail damage repair", "Door ding removal", "Preserves factory paint", "Quick turnaround"],
+        bg: "https://images.unsplash.com/photo-1581166397057-235af2b3c6dd?w=600&q=70"
+      },
+    ];
+
+    /* ── Render Packages ──────────────────────────────────── */
+    const grid = document.getElementById('packagesGrid');
+    packages.forEach(pkg => {
+      const checkSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+      const clockSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+      const calSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+      const features = pkg.features.map(f => `<li>${checkSvg}<span>${f}</span></li>`).join('');
+      grid.innerHTML += `
+      <div class="pkg-card">
+        <div class="pkg-header" style="background-image:url('${pkg.bg}')">
+          <div class="pkg-header-overlay"></div>
+          <div class="pkg-header-content">
+            <div>
+              <span class="pkg-cat">${pkg.category}</span>
+              <div class="pkg-name">${pkg.name}</div>
+            </div>
+            <div>
+              <div class="pkg-price">${pkg.priceRange}</div>
+              <div class="pkg-duration">${clockSvg} ${pkg.duration}</div>
+            </div>
+          </div>
+        </div>
+        <div class="pkg-body">
+          <ul class="pkg-features">${features}</ul>
+          <button class="btn-book" onclick="openModal('${pkg.name}')">${calSvg} Book Now</button>
+        </div>
+      </div>`;
+    });
+
+    /* ── Scroll Helper ────────────────────────────────────── */
+    function scrollTo(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ── Modal ────────────────────────────────────────────── */
+    function openModal(pkgName) {
+      document.getElementById('bookingModal').classList.add('open');
+      if (pkgName) {
+        const sel = document.getElementById('packageSelect');
+        for (let opt of sel.options) {
+          if (opt.text.startsWith(pkgName)) { sel.value = opt.value; break; }
+        }
+      }
+      // Set min date
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('dateInput').min = today;
+    }
+    function closeModal() {
+      document.getElementById('bookingModal').classList.remove('open');
+    }
+    document.getElementById('bookingModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('bookingModal')) closeModal();
+    });
+    function submitBooking(e) {
+      e.preventDefault();
+      alert('Booking submitted! Our team will contact you shortly.');
+      closeModal();
+      e.target.reset();
+    }
+
+    /* ── Auth stubs ────────────────────────────────────────── */
+    function handleLogin() {
+      alert('Sign In — connect this to your auth flow.');
+    }
+    function handleSignUp() {
+      alert('Sign Up — connect this to your auth flow.');
+    }
+
+    /* ── Search ────────────────────────────────────────────── */
+    document.getElementById('searchInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.target.value.trim()) {
+        alert('Searching for: ' + e.target.value.trim());
+      }
+    });
+  </script>
+</body>
+
+</html>

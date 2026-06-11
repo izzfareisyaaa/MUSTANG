@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="page-vehicle" class="page active" style="display:block; padding: 2rem;">
+
+    <!-- Top header bar -->
+    <div class="vm-wrapper">
+        <div class="vm-header glass-panel">
+            <div class="vm-search-wrap">
+                <i class="fa-solid fa-magnifying-glass vm-search-icon"></i>
+                <input type="text" id="vm-top-search" class="vm-top-input"
+                    placeholder="Search by vehicle model or vehicle ID..." />
+            </div>
+            <button class="btn btn-primary vm-new-btn" id="vm-new-btn">
+                <i class="fa-solid fa-plus"></i> New Vehicle
+            </button>
+        </div>
+
+        <!-- Vehicle Management card -->
+        <div class="vm-card glass-panel">
+            <h2 class="vm-title">Vehicle Management</h2>
+
+            <div class="vm-subbar">
+                <span class="vm-section-label">Previous Vehicle</span>
+                <div class="vm-inline-search">
+                    <label>Search:</label>
+                    <input type="text" id="vm-inline-search" class="vm-inline-input" />
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="vm-table" id="vm-table">
+                    <thead>
+                        <tr>
+                        <th>No</th>
+                        <th>Plate Number</th>
+                        <th>Model</th>
+                        <th>Year Model</th>
+                        <th>Action</th>
+                        </tr>
+                </thead>
+                <tbody id="vm-tbody"></tbody>
+                </table>
+<!-- Add Vehicle Form -->
+<div id="vehicle-form"
+    class="glass-panel"
+    style="
+        display:none;
+        margin-top:2rem;
+        padding:2rem;
+    ">
+
+    <h2 style="margin-bottom:1.5rem">
+        Add New Vehicle
+    </h2>
+
+    <div class="form-group">
+        <label>Vehicle Plate Number:</label>
+
+        <input type="text"
+            id="vehicle-id"
+            class="vm-inline-input"
+            placeholder="PPD5449">
+    </div>
+
+    <div class="form-group">
+        <label>Vehicle Model:</label>
+
+        <input type="text"
+            id="vehicle-model"
+            class="vm-inline-input"
+            placeholder="Toyota Camry">
+    </div>
+
+    <div class="form-group">
+        <label>Model Year:</label>
+
+        <input type="text"
+            id="vehicle-phone"
+            class="vm-inline-input"
+            placeholder="2020">
+    </div>
+
+    <div style="
+        display:flex;
+        gap:1rem;
+        margin-top:2rem;
+    ">
+
+        <button id="save-vehicle-btn"
+            class="btn btn-primary">
+            Save Vehicle
+        </button>
+
+        <button id="cancel-vehicle-btn"
+            class="btn">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- popup msg -->
+  <div id="sp-popup-overlay">
+    <div id="sp-popup-box">
+      <div id="sp-popup-icon"></div>
+      <p id="sp-popup-msg"></p>
+      <button id="sp-popup-ok">OK</button>
+    </div>
+  </div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

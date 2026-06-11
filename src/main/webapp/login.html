@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | X-PERT DETAILING</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #eef2f8 0%, #e5e9f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+
+    /* Main Login Container */
+    .login-container {
+      max-width: 480px;
+      width: 100%;
+      background: white;
+      border-radius: 40px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: 0.2s;
+    }
+
+    /* Header with back button */
+    .login-header {
+      padding: 24px 28px 12px 28px;
+      border-bottom: 1px solid #edf2f7;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 8px 16px;
+      border-radius: 40px;
+      text-decoration: none;
+      color: #1f4e5e;
+      font-weight: 500;
+      font-size: 13px;
+      transition: 0.2s;
+    }
+
+    .back-home i {
+      font-size: 12px;
+    }
+
+    .back-home:hover {
+      background: #e2e8f0;
+      color: #0f3b48;
+    }
+
+    /* Logo Section */
+    .logo-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 28px 0 28px;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: #0d5365;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo i {
+      font-size: 42px;
+      color: #f4b942;
+    }
+
+    .logo-section h1 {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #0b3b44, #1c6e80);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    .logo-section p {
+      color: #5b6e8c;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+      text-align: center;
+      padding: 16px 28px 0 28px;
+    }
+
+    .welcome-section h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #02153a;
+      margin-bottom: 6px;
+    }
+
+    .welcome-section p {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* Login Form */
+    .login-form {
+      padding: 24px 28px 20px 28px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      color: #1f4e5e;
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i.input-icon {
+      position: absolute;
+      left: 16px;
+      color: #9aaebf;
+      font-size: 14px;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border-radius: 18px;
+      border: 1.5px solid #e2e8f0;
+      background: #fefefe;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    .input-wrapper input:focus {
+      border-color: #f4b942;
+      box-shadow: 0 0 0 3px rgba(244, 185, 66, 0.2);
+    }
+
+    /* Password Toggle */
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #8ba0bc;
+      font-size: 16px;
+    }
+
+    /* Login Button */
+    .login-btn {
+      width: 100%;
+      background: #1e7e8f;
+      border: none;
+      padding: 14px;
+      border-radius: 40px;
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .login-btn:hover {
+      background: #0f6778;
+      transform: scale(0.98);
+    }
+
+    /* Demo Accounts Box */
+    .demo-box {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin: 8px 28px 20px 28px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .demo-box p {
+      font-weight: 700;
+      font-size: 12px;
+      color: #1f4e5e;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-box p i {
+      color: #f4b942;
+    }
+
+    .demo-accounts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .demo-item {
+      font-size: 12px;
+      color: #475569;
+      padding: 6px 10px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .demo-role {
+      font-weight: 700;
+      color: #0d5365;
+      background: #e6f7f5;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+    }
+
+    .demo-credentials {
+      font-family: monospace;
+      font-size: 11px;
+      color: #5b6f8c;
+    }
+
+    /* Sign Up Link */
+    .signup-link {
+      text-align: center;
+      padding: 0 28px 28px 28px;
+      font-size: 13px;
+      color: #5b6e8c;
+    }
+
+    .signup-link a {
+      color: #1e7e8f;
+      text-decoration: none;
+      font-weight: 700;
+      margin-left: 5px;
+    }
+
+    .signup-link a:hover {
+      color: #f4b942;
+      text-decoration: underline;
+    }
+
+    /* Error Toast */
+    .toast-notify {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1f4e5e;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      z-index: 1100;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+      animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .login-container {
+        border-radius: 28px;
+      }
+
+      .login-header {
+        padding: 18px 20px 8px 20px;
+      }
+
+      .login-form {
+        padding: 20px 20px 16px 20px;
+      }
+
+      .demo-box {
+        margin: 8px 20px 16px 20px;
+      }
+
+      .signup-link {
+        padding: 0 20px 24px 20px;
+      }
+
+      .welcome-section {
+        padding: 12px 20px 0 20px;
+      }
+
+      .logo-section {
+        padding: 16px 20px 0 20px;
+      }
+    }
+
+    .avatar-small {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .avatar-small img {
+      width: 14%;
+      height: 14%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* sign in link styling */
+    .signin-link {
+      grid-column: span 2;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 18px;
+      font-size: 14px;
+      color: #5b6e8c;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-container">
+    <!-- Header with Back Button -->
+    <div class="login-header">
+      <a href="#" class="back-home" id="backHomeBtn">
+        <i class="fa-solid fa-arrow-left"></i> Back to Home
+      </a>
+    </div>
+
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="avatar-small">
+        <img src="image/LOGO XPERT.png" alt="Profile Logo">
+      </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h2>Welcome Back</h2>
+      <p>Sign in to your account</p>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="login-form">
+      <div class="input-group">
+        <label><i class="fa-regular fa-user" style="margin-right: 6px;"></i> Username</label>
+        <div class="input-wrapper">
+          <i class="fa-regular fa-circle-user input-icon"></i>
+          <input type="text" id="username" placeholder="Enter your username" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label><i class="fa-solid fa-lock" style="margin-right: 6px;"></i> Password</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-key input-icon"></i>
+          <input type="password" id="password" placeholder="Enter your password">
+          <button type="button" class="password-toggle" id="togglePassword">
+            <i class="fa-regular fa-eye-slash"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Login
+      </button>
+    </form>
+
+    <!-- Demo Accounts Box -->
+    <div class="demo-box">
+      <p><i class="fa-solid fa-circle-info"></i> Demo Accounts</p>
+      <div class="demo-accounts">
+        <div class="demo-item">
+          <span class="demo-role">Owner</span>
+          <span class="demo-credentials">owner123 / Owner123</span>
+        </div>
+        <div class="demo-item">
+          <span class="demo-role">Staff</span>
+          <span class="demo-credentials">staff123 / Staff123</span>
+        </div>
+        <div class="demo-item">
+          <span class="demo-role">Customer</span>
+          <span class="demo-credentials">customer123 / Customer123</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sign Up Link -->
+    <div class="signup-link">
+      Don't have an account? <a href="createCustAcc.html" id="signupLink">Sign Up</a>
+    </div>
+  </div>
+
+  <script>
+    // Demo user credentials
+    const demoUsers = [
+      { role: "Owner", name: "Ab Rahman bin Ahmat", username: "owner123", password: "Owner123" },
+      { role: "Staff", name: "Sarah Johnson", username: "staff123", password: "Staff123", redirect: "dashboard-staff.html" },
+      { role: "Customer", name: "Mike Davis", username: "customer123", password: "Customer123", redirect: "dashboard-customer.html" }
+    ];
+
+    // Toast notification function
+    function showToast(message, icon = "✅") {
+      const existingToast = document.querySelector('.toast-notify');
+      if (existingToast) existingToast.remove();
+      const toast = document.createElement('div');
+      toast.className = 'toast-notify';
+      toast.innerHTML = `${icon} ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2800);
+    }
+
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    if (togglePassword) {
+      togglePassword.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.innerHTML = type === 'password' ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+      });
+    }
+
+    // Handle login form submission
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordField = document.getElementById('password');
+
+    if (loginForm) {
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const username = usernameInput.value.trim();
+        const password = passwordField.value.trim();
+
+        if (!username || !password) {
+          showToast("Please enter both username and password", "⚠️");
+          return;
+        }
+
+        // Find matching user
+        const matchedUser = demoUsers.find(user =>
+          user.username.toLowerCase() === username.toLowerCase() &&
+          user.password === password
+        );
+
+        if (matchedUser) {
+          // Store user info in session storage
+          sessionStorage.setItem('currentUser', JSON.stringify({
+            name: matchedUser.name || matchedUser.username,
+            email: matchedUser.username.toLowerCase() + '@xpertdetailing.com',
+            role: matchedUser.role.toLowerCase() === 'owner' ? 'owner' : matchedUser.role.toLowerCase()
+          }));
+
+          showToast(`Welcome ${matchedUser.role}! Redirecting...`, "✅");
+
+          // Redirect to appropriate dashboard
+          setTimeout(() => {
+            if (matchedUser.role.toLowerCase() === 'owner') {
+              window.location.href = "ownerInterface.html";
+            } else {
+              window.location.href = "dboard.html";
+            }
+          }, 1000);
+        } else {
+          showToast("Invalid username or password. Please try again.", "❌");
+          passwordField.value = "";
+          passwordField.focus();
+        }
+      });
+    }
+
+    // Back to Home button handler
+    const backHomeBtn = document.getElementById('backHomeBtn');
+    if (backHomeBtn) {
+      backHomeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showToast("🏠 Navigate back to home (demo)", "ℹ️");
+        // Can add actual redirect logic if needed
+        // window.location.href = "/";
+      });
+    }
+
+    // Sign Up link handler
+    const signupLink = document.getElementById('signupLink');
+    if (signupLink) {
+      signupLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showToast("📝 Redirecting to Sign Up page (demo)", "ℹ️");
+        // Uncomment for actual redirect:
+        // window.location.href = "signup.html";
+      });
+    }
+
+    // Enter key support
+    if (passwordField) {
+      passwordField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          loginForm.dispatchEvent(new Event('submit'));
+        }
+      });
+    }
+    if (usernameInput) {
+      usernameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          passwordField.focus();
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

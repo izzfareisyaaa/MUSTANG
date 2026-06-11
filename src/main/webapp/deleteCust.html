@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Accounts | Xpert Detailing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: #f0f2f8;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ========= SIDEBAR  ========= */
+    .sidebar {
+      width: 280px;
+      background: #0a3b44;
+      background: linear-gradient(165deg, #0e4b5c 0%, #08313b 100%);
+      color: #eef5f7;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 4px 0 16px rgba(0, 0, 0, 0.06);
+      flex-shrink: 0;
+    }
+
+    .mini-profile {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(2px);
+      border-radius: 24px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .mini-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #f4b942;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #2c2c2c;
+    }
+
+    .mini-profile h4 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .mini-profile p {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 4px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      padding-top: 10px;
+    }
+
+    .nav-item {
+      color: #d9eef3;
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.2s;
+    }
+
+    .nav-item i {
+      width: 24px;
+      font-size: 1.2rem;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(244, 185, 66, 0.2);
+      color: #f4b942;
+    }
+
+    .nav-section-title {
+      padding: 10px 15px 0;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 1px;
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: auto;
+      padding-top: 20px;
+    }
+
+    .sidebar-footer .nav-item {
+      border: none;
+      background: #c44536;
+      color: white;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px;
+      border-radius: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+      transition: 0.2s;
+    }
+
+    .sidebar-footer .nav-item:hover {
+      background: #ac3627;
+    }
+
+    /* ========= MAIN CONTENT ========= */
+    .main-content {
+      flex: 1;
+      padding: 28px 36px;
+      overflow-y: auto;
+    }
+
+    /* header area */
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #0b3b44, #1c6e80);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    .page-header p {
+      color: #4a5b6e;
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    /* action bar with search */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+      background: white;
+      padding: 12px 24px;
+      border-radius: 60px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e9edf2;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border-radius: 40px;
+      padding: 8px 18px;
+      gap: 12px;
+      border: 1px solid #e2e8f0;
+      width: 320px;
+    }
+
+    .search-box i {
+      color: #8ba0bc;
+    }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .stats-badge {
+      background: #eef2ff;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e7e8f;
+    }
+
+    /* customer table card */
+    .customer-table-container {
+      background: white;
+      border-radius: 28px;
+      padding: 6px 0 16px 0;
+      border: 1px solid #eef2f9;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+      overflow-x: auto;
+    }
+
+    .customer-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .customer-table th {
+      text-align: left;
+      padding: 18px 20px;
+      background: #f9fbfe;
+      color: #2c4c5c;
+      font-weight: 700;
+      border-bottom: 1px solid #e9edf2;
+    }
+
+    .customer-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid #f0f3f9;
+      color: #1e2f3a;
+      font-weight: 500;
+    }
+
+    .customer-table tr:hover td {
+      background-color: #fefcf5;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 60px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #e2f6e9;
+      color: #1f7840;
+    }
+
+    .status-badge.inactive {
+      background: #ffe6e5;
+      color: #bc3f33;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .edit-btn-icon {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #f4b942;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .edit-btn-icon:hover {
+      transform: scale(1.1);
+      color: #dc9e2c;
+    }
+
+    .delete-btn-icon {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #b91c1c;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: 0.2s;
+    }
+
+    .delete-btn-icon:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .toast-notify {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f4e5e;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 500;
+      z-index: 1100;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: fadeInDown 0.2s ease;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    /* edit modal (inline edit style) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .edit-customer-modal {
+      background: white;
+      max-width: 520px;
+      width: 90%;
+      border-radius: 32px;
+      padding: 28px 32px;
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      border-bottom: 2px solid #f0f2f5;
+      padding-bottom: 14px;
+    }
+
+    .modal-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1F4E5E;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #7f8c8d;
+    }
+
+    .modal-form-group {
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .modal-form-group label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #2d4f5e;
+    }
+
+    .modal-form-group input {
+      padding: 12px 16px;
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .modal-form-group input:focus {
+      border-color: #f4b942;
+      box-shadow: 0 0 0 3px rgba(244, 185, 66, 0.2);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .modal-cancel {
+      background: #f1f3f7;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .modal-save {
+      background: #1e7e8f;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media (max-width: 780px) {
+      .sidebar {
+        width: 80px;
+        padding: 20px 12px;
+      }
+
+      .mini-profile h4,
+      .mini-profile p,
+      .menu a span {
+        display: none;
+      }
+
+      .menu a i {
+        margin: 0 auto;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR  -->
+  <aside class="sidebar">
+    <div class="sidebar-header" style="border: none; padding: 0; cursor: pointer; transition: opacity 0.2s;"
+      onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"
+      onclick="const u = JSON.parse(sessionStorage.getItem('currentUser') || '{}'); window.location.href = u.role === 'customer' ? 'viewUpdatecustacc.html' : 'viewUpdatestaffacc.html';">
+      <div class="mini-profile" style="width: 100%;">
+        <div class="mini-avatar"><i class="fa-solid fa-user"></i></div>
+        <div
+          style="display: flex; flex-direction: column; justify-content: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+          <h4 id="sidebar-user-name" style="font-size: 14px; margin: 0; color: white;">User</h4>
+          <p id="sidebar-user-role"
+            style="font-size: 11px; opacity: 0.8; margin: 0; text-transform: capitalize; color: white;">Role</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" style="padding-top: 10px;">
+      <a href="dboard.html#dashboard" class="nav-item role-staff" data-target="dashboard">
+        <i class="fa-solid fa-gauge"></i> Dashboard
+      </a>
+
+      <div class="nav-section-title"
+        style="padding: 10px 15px 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 1px;">
+        Booking</div>
+      <a href="custBooking.html" class="nav-item role-customer">
+        <i class="fa-solid fa-calendar-check"></i> My Bookings
+      </a>
+      <a href="staffBooking.html" class="nav-item role-staff">
+        <i class="fa-solid fa-calendar-check"></i> Manage Bookings
+      </a>
+      <a href="dboard.html#package" class="nav-item" data-target="package">
+        <i class="fa-solid fa-box"></i> Package
+      </a>
+      <a href="vehicle.html" class="nav-item" data-target="vehicle">
+        <i class="fa-solid fa-car"></i> Vehicle
+      </a>
+      <a href="dboard.html#report" class="nav-item role-staff" data-target="report">
+        <i class="fa-solid fa-chart-bar"></i> Report
+      </a>
+      <a href="dboard.html#invoice" class="nav-item" data-target="invoice">
+        <i class="fa-solid fa-file-lines"></i> Invoice
+      </a>
+
+      <a href="deleteCust.html" class="nav-item role-staff active">
+        <i class="fa-solid fa-users-slash"></i> Manage Customer
+      </a>
+    </nav>
+
+    <div class="sidebar-footer" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
+      <button id="logout-btn" class="nav-item text-danger"
+        onclick="sessionStorage.removeItem('currentUser'); window.location.href='homepage.html';">
+        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <a href="dboard.html#dashboard"
+      style="display:inline-block; margin-bottom:15px; color:var(--primary); font-weight:600; text-decoration:none;"><i
+        class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    <header class="topbar">
+      <div class="topbar-text">
+        <h1>Manage Customers</h1>
+      </div>
+    </header>
+    <p>View all customer accounts (customers register themselves)</p>
+    </div>
+
+    <div class="action-bar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchCustomerInput" placeholder="Search by name, email, phone...">
+      </div>
+      <div class="stats-badge">
+        <i class="fa-regular fa-users"></i> Total: <span id="totalCustomersCount">0</span> customers
+      </div>
+    </div>
+
+    <!-- Customer Table: NAME, EMAIL, PHONE, ROLE, JOIN DATE, STATUS, ACTIONS (edit + delete) -->
+    <div class="customer-table-container">
+      <table class="customer-table">
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>PHONE</th>
+            <th>ROLE</th>
+            <th>JOIN DATE</th>
+            <th>STATUS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="customerTableBody">
+          <!-- dynamic rows from JS -->
+        </tbody>
+      </table>
+    </div>
+    </div>
+
+    <!-- Edit Customer Modal (inline edit form) -->
+    <div id="editCustomerModal" class="modal-overlay">
+      <div class="edit-customer-modal">
+        <div class="modal-header">
+          <h2><i class="fa-regular fa-pen-to-square"></i> Edit Customer</h2>
+          <button class="close-modal" id="closeEditModalBtn">&times;</button>
+        </div>
+        <form id="editCustomerForm">
+          <input type="hidden" id="editCustomerId">
+          <div class="modal-form-group">
+            <label>Full Name</label>
+            <input type="text" id="editName" required>
+          </div>
+          <div class="modal-form-group">
+            <label>Email Address</label>
+            <input type="email" id="editEmail" required>
+          </div>
+          <div class="modal-form-group">
+            <label>Phone Number</label>
+            <input type="text" id="editPhone" required>
+          </div>
+          <div class="modal-form-group">
+            <label>Role</label>
+            <input type="text" id="editRole" required>
+          </div>
+          <div class="modal-form-group">
+            <label>Status</label>
+            <select id="editStatus">
+              <option value="active">active</option>
+              <option value="inactive">inactive</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="modal-cancel" id="cancelEditBtn">Cancel</button>
+            <button type="submit" class="modal-save">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteCustomerModal" class="modal-overlay">
+      <div class="edit-customer-modal" style="max-width: 400px; text-align: center;">
+        <div style="font-size: 40px; color: #dc2626; margin-bottom: 15px;">
+          <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+        <h3 style="margin-bottom: 10px;">Confirm Deletion</h3>
+        <p style="color: #64748b; margin-bottom: 25px;">Are you sure you want to delete <strong
+            id="deleteCustName"></strong>? This action cannot be undone.</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button id="cancelDeleteBtn" class="modal-cancel" style="padding: 10px 20px;">Cancel</button>
+          <button id="confirmDeleteBtn" class="modal-save" style="background: #dc2626; padding: 10px 20px;">Yes,
+            Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // -------------------------------------------------------------
+      // CUSTOMER DATA
+      // -------------------------------------------------------------
+      let customers = [
+        { id: "cust_001", name: "Mike Davis", email: "customer@example.com", phone: "017-9873232", role: "Customer", joinDate: "2025-12-20", status: "active" },
+        { id: "cust_002", name: "Emma Wilson", email: "emma@example.com", phone: "019-6551201", role: "Customer", joinDate: "2025-11-10", status: "active" },
+        { id: "cust_003", name: "James Brown", email: "james@example.com", phone: "018-3215632", role: "Customer", joinDate: "2026-01-05", status: "active" },
+        { id: "cust_004", name: "Ahmad Bin Ali", email: "ahmad@example.com", phone: "012-3456789", role: "Customer", joinDate: "2025-03-15", status: "active" },
+        { id: "cust_005", name: "Siti Nurhaliza", email: "siti@example.com", phone: "013-4567890", role: "Customer", joinDate: "2024-04-20", status: "inactive" }
+      ];
+
+      // Helper: show toast message (rubish delete style will use same icon as trash can)
+      function showToast(message, icon = "✅") {
+        const existingToast = document.querySelector('.toast-notify');
+        if (existingToast) existingToast.remove();
+        const toast = document.createElement('div');
+        toast.className = 'toast-notify';
+        toast.innerHTML = `${icon} ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2700);
+      }
+
+      // Render customer table with search filter
+      function renderCustomerTable(searchTerm = "") {
+        const tbody = document.getElementById("customerTableBody");
+        if (!tbody) return;
+
+        const filtered = customers.filter(cust =>
+          cust.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          cust.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          cust.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          cust.role.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        const totalSpan = document.getElementById("totalCustomersCount");
+        if (totalSpan) totalSpan.innerText = filtered.length;
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px;">No customer accounts found</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = filtered.map(cust => `
+      <tr data-customer-id="${cust.id}">
+        <td>${escapeHtml(cust.name)}</td>
+        <td>${escapeHtml(cust.email)}</td>
+        <td>${escapeHtml(cust.phone)}</td>
+        <td>${escapeHtml(cust.role)}</td>
+        <td>${escapeHtml(cust.joinDate)}</td>
+        <td><span class="status-badge ${cust.status === 'active' ? '' : 'inactive'}">${cust.status}</span></td>
+        <td class="action-buttons">
+          <button class="delete-btn-icon" data-id="${cust.id}" title="Delete customer"><i class="fa-regular fa-trash-can"></i></button>
+        </td>
+      </tr>
+    `).join('');
+
+        // attach edit events
+        document.querySelectorAll('.edit-btn-icon').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const custId = btn.getAttribute('data-id');
+            openEditModal(custId);
+          });
+        });
+
+        // attach delete events (using trash icon as requested)
+        document.querySelectorAll('.delete-btn-icon').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const custId = btn.getAttribute('data-id');
+            deleteCustomerById(custId);
+          });
+        });
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function (m) {
+          if (m === '&') return '&amp;';
+          if (m === '<') return '&lt;';
+          if (m === '>') return '&gt;';
+          return m;
+        });
+      }
+
+      // Delete customer function 
+      let customerToDeleteId = null;
+
+      function deleteCustomerById(customerId) {
+        const customerToDelete = customers.find(c => c.id === customerId);
+        if (!customerToDelete) return;
+
+        customerToDeleteId = customerId;
+        document.getElementById("deleteCustName").textContent = customerToDelete.name;
+        document.getElementById("deleteCustomerModal").style.display = "flex";
+      }
+
+      // Cancel delete
+      document.getElementById("cancelDeleteBtn").addEventListener("click", () => {
+        document.getElementById("deleteCustomerModal").style.display = "none";
+        customerToDeleteId = null;
+      });
+
+      // Confirm delete
+      document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
+        if (!customerToDeleteId) return;
+        const customerToDelete = customers.find(c => c.id === customerToDeleteId);
+        if (customerToDelete) {
+          customers = customers.filter(c => c.id !== customerToDeleteId);
+          const searchInput = document.getElementById("searchCustomerInput");
+          const currentSearch = searchInput ? searchInput.value : "";
+          renderCustomerTable(currentSearch);
+          showToast(`🗑️ Customer ${customerToDelete.name} has been deleted`, "🗑️");
+        }
+        document.getElementById("deleteCustomerModal").style.display = "none";
+        customerToDeleteId = null;
+      });
+
+      // ---------- EDIT MODAL LOGIC ----------
+      const editModal = document.getElementById("editCustomerModal");
+      const closeEditBtn = document.getElementById("closeEditModalBtn");
+      const cancelEditBtn = document.getElementById("cancelEditBtn");
+      const editForm = document.getElementById("editCustomerForm");
+      let currentEditId = null;
+
+      function openEditModal(customerId) {
+        const customer = customers.find(c => c.id === customerId);
+        if (!customer) return;
+        currentEditId = customerId;
+
+        document.getElementById("editCustomerId").value = customer.id;
+        document.getElementById("editName").value = customer.name;
+        document.getElementById("editEmail").value = customer.email;
+        document.getElementById("editPhone").value = customer.phone;
+        document.getElementById("editRole").value = customer.role;
+        document.getElementById("editStatus").value = customer.status;
+
+        editModal.classList.add("active");
+      }
+
+      function closeEditModal() {
+        editModal.classList.remove("active");
+        currentEditId = null;
+      }
+
+      function saveEditCustomer(event) {
+        event.preventDefault();
+        const updatedId = document.getElementById("editCustomerId").value;
+        const newName = document.getElementById("editName").value.trim();
+        const newEmail = document.getElementById("editEmail").value.trim();
+        const newPhone = document.getElementById("editPhone").value.trim();
+        const newRole = document.getElementById("editRole").value.trim();
+        const newStatus = document.getElementById("editStatus").value;
+
+        if (!newName || !newEmail || !newPhone || !newRole) {
+          showToast("Please fill all fields", "⚠️");
+          return;
+        }
+
+        const index = customers.findIndex(c => c.id === updatedId);
+        if (index !== -1) {
+          customers[index] = {
+            ...customers[index],
+            name: newName,
+            email: newEmail,
+            phone: newPhone,
+            role: newRole,
+            status: newStatus,
+            joinDate: customers[index].joinDate
+          };
+          const searchInput = document.getElementById("searchCustomerInput");
+          const currentSearch = searchInput ? searchInput.value : "";
+          renderCustomerTable(currentSearch);
+          showToast(`✏️ Customer "${newName}" updated successfully`, "✏️");
+          closeEditModal();
+        } else {
+          showToast("Error updating customer", "❌");
+        }
+      }
+
+      // Event listeners for modal
+      if (closeEditBtn) closeEditBtn.addEventListener("click", closeEditModal);
+      if (cancelEditBtn) cancelEditBtn.addEventListener("click", closeEditModal);
+      editModal.addEventListener("click", (e) => { if (e.target === editModal) closeEditModal(); });
+      if (editForm) editForm.addEventListener("submit", saveEditCustomer);
+
+      // Search functionality
+      const searchInputElem = document.getElementById("searchCustomerInput");
+      if (searchInputElem) {
+        searchInputElem.addEventListener("input", (e) => {
+          renderCustomerTable(e.target.value);
+        });
+      }
+
+      // Initialize table
+      renderCustomerTable("");
+
+      // Load user from session storage
+      document.addEventListener("DOMContentLoaded", () => {
+        const userStr = sessionStorage.getItem('currentUser');
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            const nameEl = document.getElementById('sidebar-user-name');
+            const roleEl = document.getElementById('sidebar-user-role');
+            if (nameEl) nameEl.textContent = user.name || user.username;
+            if (roleEl) roleEl.textContent = user.email || user.role;
+
+            // Handle role visibility
+            if (user.role === 'customer') {
+              document.querySelectorAll('.role-staff').forEach(el => el.style.display = 'none');
+            } else {
+              document.querySelectorAll('.role-customer').forEach(el => el.style.display = 'none');
+            }
+          } catch (e) { }
+        }
+      });
+
+      // Logout
+      const logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          sessionStorage.removeItem('currentUser');
+          window.location.href = 'homepage.html';
+        });
+      }
+
+    </script>
+</body>
+
+</html>

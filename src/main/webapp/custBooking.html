@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Management | X-PERT Detailing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #0d5365;
+            --secondary: #1aa3bd;
+            --accent: #f4b942;
+            --bg: #f3f4f6;
+            --white: #ffffff;
+            --danger: #ef4444;
+            --success: #10b981;
+            --purple: #6b46c1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: #374151;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 280px; background: linear-gradient(165deg, #0e4b5c 0%, #08313b 100%); color: white; flex-shrink: 0; display: flex; flex-direction: column; padding: 28px 20px; box-shadow: 4px 0 16px rgba(0, 0, 0, 0.06); }
+        .sidebar-header { border: none; padding: 0; cursor: pointer; transition: opacity 0.2s; margin-bottom: 20px; }
+        .mini-profile { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(2px); border-radius: 24px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; }
+        .mini-avatar { width: 52px; height: 52px; border-radius: 50%; background: #f4b942; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #2c2c2c; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; }
+        .nav-item { color: #d9eef3; text-decoration: none; padding: 12px 14px; border-radius: 16px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 14px; transition: all 0.2s; }
+        .nav-item i { width: 24px; font-size: 1.2rem; }
+        .nav-item:hover, .nav-item.active { background: rgba(244, 185, 66, 0.2); color: #f4b942; }
+        .sidebar-footer { border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto; padding-top: 20px; }
+        .text-danger { background: #c44536; color: white; justify-content: center; padding: 14px; border-radius: 40px; margin-top: 10px; cursor: pointer; border: none; font-size: 15px; font-weight: 500; }
+        .text-danger:hover { background: #ac3627; color: white; }
+
+        /* --- MAIN CONTENT --- */
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .new-booking-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .table-container {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9fafb;
+            text-align: left;
+            padding: 15px;
+            font-size: 13px;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 14px;
+        }
+
+        /* --- ACTION BUTTONS --- */
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-action {
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .btn-edit {
+            background: var(--primary);
+        }
+
+        .btn-view {
+            background: var(--purple);
+        }
+
+        .btn-delete {
+            background: var(--danger);
+        }
+
+        /* Disable style for buttons */
+        .btn-action:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* --- BADGES --- */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-booked {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-progress {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-completed {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        /* --- MODAL SYSTEM --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            place-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: grid;
+        }
+
+        .booking-modal {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        /* --- CALENDAR UI --- */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .cal-day {
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .cal-day:hover:not(.closed):not(.full) {
+            background: #f0f9ff;
+            border-color: var(--secondary);
+        }
+
+        .cal-day.selected {
+            background: var(--secondary) !important;
+            color: white;
+        }
+
+        .cal-day.closed {
+            background: #f1f5f9;
+            color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .cal-day.full {
+            background: #fee2e2;
+            color: #ef4444;
+            cursor: not-allowed;
+            font-weight: bold;
+        }
+
+        /* --- EDIT/DETAILS MODAL SPECIFIC --- */
+        .details-section {
+            border: 1px solid #edf2f7;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item label {
+            font-size: 12px;
+            color: #718096;
+            display: block;
+        }
+
+        .detail-item span,
+        .detail-item input,
+        .detail-item select {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2d3748;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .status-badge-inline {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            gap: 10px;
+        }
+
+        .btn-next,
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-back,
+        .btn-close {
+            background: #e2e8f0;
+            color: #475569;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header" style="border: none; padding: 0; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1" onclick="const u = JSON.parse(sessionStorage.getItem('currentUser') || '{}'); window.location.href = u.role === 'customer' ? 'viewUpdatecustacc.html' : 'viewUpdatestaffacc.html';">
+                <div class="mini-profile" style="width: 100%;">
+                    <div class="mini-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div style="display: flex; flex-direction: column; justify-content: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                        <h4 id="sidebar-user-name" style="font-size: 14px; margin: 0; color: white;">User</h4>
+                        <p id="sidebar-user-role" style="font-size: 11px; opacity: 0.8; margin: 0; text-transform: capitalize; color: white;">Role</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dboard.html#dashboard" class="nav-item role-staff" data-target="dashboard">
+                    <i class="fa-solid fa-gauge"></i> Dashboard
+                </a>
+                <div class="nav-section-title" style="padding: 10px 15px 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 1px;">Booking</div>
+                <a href="custBooking.html" class="nav-item role-customer active">
+                    <i class="fa-solid fa-calendar-check"></i> My Bookings
+                </a>
+                <a href="staffBooking.html" class="nav-item role-staff">
+                    <i class="fa-solid fa-calendar-check"></i> Manage Bookings
+                </a>
+                <a href="dboard.html#package" class="nav-item" data-target="package">
+                    <i class="fa-solid fa-box"></i> Package
+                </a>
+                <a href="vehicle.html" class="nav-item" data-target="vehicle">
+                    <i class="fa-solid fa-car"></i> Vehicle
+                </a>
+                <a href="dboard.html#report" class="nav-item role-staff" data-target="report">
+                    <i class="fa-solid fa-chart-bar"></i> Report
+                </a>
+                <a href="dboard.html#invoice" class="nav-item" data-target="invoice">
+                    <i class="fa-solid fa-file-lines"></i> Invoice
+                </a>
+                <a href="deleteCust.html" class="nav-item role-staff">
+                    <i class="fa-solid fa-users-slash"></i> Manage Customer
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="nav-item text-danger">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                </button>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="topbar">
+                <h1>Booking Management</h1>
+                <button class="new-booking-btn" onclick="openModal()"><i class="fa-solid fa-plus"></i> New
+                    Booking</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Booking ID</th>
+                            <th>Vehicle</th>
+                            <th>Status</th>
+                            <th>Date & Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingBody"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div id="bookingModal" class="modal-overlay">
+        <div class="booking-modal">
+            <h2 style="margin-bottom: 20px; font-size: 18px;">Reserve Your Booking</h2>
+
+            <div id="step1" class="step-panel active">
+                <label style="font-size: 13px; font-weight: 700;">Step 1: Select Date & Time</label>
+                <div style="text-align: center; margin-top: 10px; font-weight: bold;">May 2026</div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Preferred Time *</label>
+                    <input type="text" id="inputTime" placeholder="e.g. 10:00 AM">
+                </div>
+                <div class="modal-footer">
+                    <div></div><button class="btn-next" onclick="goToStep(2)">Next Step</button>
+                </div>
+            </div>
+
+            <div id="step2" class="step-panel">
+                <label style="font-size: 13px; font-weight: 700;">Step 2: Select Service Package</label>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Service Package *</label>
+                    <select id="packageSelect">
+                        <option value="">Select Package</option>
+                        <option value="Package A - Car Wash">Package A - Car Wash - RM50 (30-45 min)</option>
+                        <option value="Package B - Polishing">Package B - Polishing - RM350 (2-3 hours)</option>
+                        <option value="Package C - Waxing">Package C - Waxing - RM120 (1-1.5 hours)</option>
+                        <option value="Package D - Interior Cleaning">Package D - Interior Cleaning - RM525 (2.5-3
+                            hours)</option>
+                        <option value="Package E - Ceramic Coating">Package E - Ceramic Coating - RM1250 (4-5 hours)
+                        </option>
+                        <option value="Package F - Protective Film">Package F - Protective Film - RM4400 (5-7 hours)
+                        </option>
+                        <option value="Package G - Paintless Dent Repair">Package G - Paintless Dent Repair - RM525 (2-4
+                            hours)</option>
+                        <option value="Special: New Year Eve">Special: New Year Eve - RM1150 (4-5 hours)</option>
+                        <option value="Special: Eid">Special: Eid - RM320 (2.5-3.5 hours)</option>
+                    </select>
+                </div>
+                <div class="modal-footer"><button class="btn-back" onclick="goToStep(1)">Back</button><button
+                        class="btn-next" onclick="goToStep(3)">Next Step</button></div>
+            </div>
+
+            <div id="step3" class="step-panel">
+                <label style="font-size: 13px; font-weight: 700;">Step 3: Vehicle Details</label>
+                <div class="form-group" style="margin-top: 15px;"><label>Vehicle Model *</label><input type="text"
+                        id="inputModel" placeholder="e.g. Honda Civic"></div>
+                <div class="form-group"><label>Plate Number *</label><input type="text" id="inputPlate"
+                        placeholder="ABC 1234"></div>
+                <div class="form-group"><label>Year of Production *</label><input type="number" id="inputYear"
+                        placeholder="e.g. 2020"></div>
+                <div class="modal-footer"><button class="btn-back" onclick="goToStep(2)">Back</button><button
+                        class="btn-submit" style="background: var(--primary);"
+                        onclick="finalizeBooking()">Submit</button></div>
+            </div>
+
+            <button onclick="closeModal()"
+                style="position: absolute; top: 15px; right: 15px; border: none; background: none; cursor: pointer; font-size: 20px;">&times;</button>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal-overlay">
+        <div class="booking-modal" style="max-width: 650px;">
+            <h2 id="editModalTitle" style="margin-bottom: 20px; font-size: 18px;">Booking Details</h2>
+            <div class="details-grid"
+                style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 20px;">
+                <div class="detail-item"><label>Booking ID</label><span id="editID" style="font-weight: bold;"></span>
+                </div>
+                <div class="detail-item"><label>Customer</label><span>Mike Davis</span></div>
+                <div class="detail-item"><label>Phone</label><span>0123456787</span></div>
+                <div class="detail-item"><label>Status</label><span id="editStatusText"></span></div>
+            </div>
+
+            <div class="details-section">
+                <h4 style="font-size: 14px; margin-bottom: 10px;">Service Details</h4>
+                <div class="detail-item"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label>Service Package:</label>
+                    <select id="editPackageSelect" onchange="handlePackageChange(this.value)"
+                        style="width: auto; border: none; background: #f9fafb; padding: 4px; font-weight: 500;">
+                        <option value="Package A - Car Wash">Package A - Car Wash</option>
+                        <option value="Package B - Polishing">Package B - Polishing</option>
+                        <option value="Package C - Waxing">Package C - Waxing</option>
+                        <option value="Package D - Interior Cleaning">Package D - Interior Cleaning</option>
+                        <option value="Package E - Ceramic Coating">Package E - Ceramic Coating</option>
+                        <option value="Package F - Protective Film">Package F - Protective Film</option>
+                        <option value="Package G - Paintless Dent Repair">Package G - Paintless Dent Repair</option>
+                        <option value="Special: New Year Eve">Special: New Year Eve</option>
+                        <option value="Special: Eid">Special: Eid</option>
+                    </select>
+                </div>
+                <div class="detail-item" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <label>Price:</label><span id="editPriceDisplay">RM 0</span>
+                </div>
+                <div class="detail-item" style="display: flex; justify-content: space-between;">
+                    <label>Duration:</label><span id="editDurationDisplay">0 hours</span>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <h4 style="font-size: 14px; margin-bottom: 10px;">Vehicle Information</h4>
+                <div class="detail-item" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <label>Vehicle Model:</label><input type="text" id="editVehicleModel"
+                        style="width: auto; border: none; text-align: right; background: #f9fafb; padding: 4px;">
+                </div>
+                <div class="detail-item" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <label>Plate Number:</label><input type="text" id="editPlateNumber"
+                        style="width: auto; border: none; text-align: right; background: #f9fafb; padding: 4px;">
+                </div>
+                <div class="detail-item" style="display: flex; justify-content: space-between;"><label>Year of
+                        Production:</label><input type="number" id="editYearInput"
+                        style="width: auto; border: none; text-align: right; background: #f9fafb; padding: 4px;"></div>
+            </div>
+
+            <div class="details-section">
+                <h4 style="font-size: 14px; margin-bottom: 10px;">Appointment Details</h4>
+                <div class="detail-item" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <label>Date:</label><span id="editDate"></span>
+                </div>
+                <div class="detail-item" style="display: flex; justify-content: space-between;">
+                    <label>Time:</label><span id="editTime"></span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-close" style="flex: 1;" onclick="closeEditModal()">Close</button>
+                <button id="updateBtn" class="btn-submit" style="flex: 1; background: var(--primary);"
+                    onclick="updateBooking()">Update</button>
+            </div>
+            <button onclick="closeEditModal()"
+                style="position: absolute; top: 15px; right: 15px; border: none; background: none; cursor: pointer; font-size: 20px;">&times;</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="booking-modal" style="max-width: 400px; text-align: center;">
+            <div style="font-size: 40px; color: var(--danger); margin-bottom: 15px;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <h3 style="margin-bottom: 10px;">Confirm Deletion</h3>
+            <p style="color: #64748b; margin-bottom: 25px;">Are you sure you want to delete this booking? This action cannot be undone.</p>
+            <div class="modal-footer" style="justify-content: center;">
+                <button class="btn-close" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-submit" style="background: var(--danger);" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Action Successful!</div>
+
+    <script>
+        // DEFINE PACKAGE DATA
+        const packageData = {
+            "Package A - Car Wash": { price: "RM 50", duration: "30-45 min" },
+            "Package B - Polishing": { price: "RM 350", duration: "2-3 hours" },
+            "Package C - Waxing": { price: "RM 120", duration: "1-1.5 hours" },
+            "Package D - Interior Cleaning": { price: "RM 525", duration: "2.5-3 hours" },
+            "Package E - Ceramic Coating": { price: "RM 1250", duration: "4-5 hours" },
+            "Package F - Protective Film": { price: "RM 4400", duration: "5-7 hours" },
+            "Package G - Paintless Dent Repair": { price: "RM 525", duration: "2-4 hours" },
+            "Special: New Year Eve": { price: "RM 1150", duration: "4-5 hours" },
+            "Special: Eid": { price: "RM 320", duration: "2.5-3.5 hours" }
+        };
+
+        let bookings = [
+            { id: "SPO000890", model: "Toyota Camry", status: "In Progress", date: "10/05/2026", time: "09:30 AM", package: "Package E - Ceramic Coating", plate: "ASD 1235", year: "2020" },
+            { id: "SPO000875", model: "Honda Civic", status: "Completed", date: "05/05/2026", time: "11:00 AM", package: "Package A - Car Wash", plate: "ABC 1234", year: "2022" }
+        ];
+
+        const fullyBookedDates = [15, 20];
+        let selectedDate = null;
+        let currentEditingId = null;
+
+        function handlePackageChange(packageName) {
+            const details = packageData[packageName];
+            if (details) {
+                document.getElementById('editPriceDisplay').innerText = details.price;
+                document.getElementById('editDurationDisplay').innerText = details.duration;
+            }
+        }
+
+        function renderTable() {
+            const body = document.getElementById('bookingBody');
+            body.innerHTML = bookings.map((b, i) => {
+                // Check if status is BOOKED (starts with BOOKED to catch PENDING statuses)
+                const isBooked = b.status.toUpperCase().includes("BOOKED");
+
+                return `
+            <tr>
+                <td>${i + 1}</td>
+                <td><strong>${b.id}</strong></td>
+                <td>${b.model}</td>
+                <td><span class="badge ${getStatusClass(b.status)}">${b.status}</span></td>
+                <td>${b.date} at ${b.time}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-action btn-edit" 
+                                onclick="openEditModal('${b.id}', false)" 
+                                ${!isBooked ? 'disabled title="Only BOOKED items can be edited"' : ''}>
+                                <i class="fa-solid fa-pencil"></i>
+                        </button>
+                        <button class="btn-action btn-view" onclick="openEditModal('${b.id}', true)">View</button>
+                        <button class="btn-action btn-delete" 
+                                onclick="deleteBooking('${b.id}')"
+                                ${!isBooked ? 'disabled title="Only BOOKED items can be deleted"' : ''}>
+                                Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `}).join('');
+        }
+
+        function getStatusClass(status) {
+            if (status.toUpperCase().includes("BOOKED")) return "badge-booked";
+            if (status === "In Progress") return "badge-progress";
+            return "badge-completed";
+        }
+
+        function openModal() { document.getElementById('bookingModal').classList.add('active'); goToStep(1); renderCalendar(); }
+        function closeModal() { document.getElementById('bookingModal').classList.remove('active'); }
+        function goToStep(step) {
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => `<small><b>${d}</b></small>`).join('');
+            for (let space = 0; space < 5; space++) { grid.innerHTML += `<div></div>`; }
+            for (let i = 1; i <= 31; i++) {
+                const dateObj = new Date(2026, 4, i);
+                const isSunday = dateObj.getDay() === 0;
+                const isFull = fullyBookedDates.includes(i);
+                let statusClass = isSunday ? 'closed' : (isFull ? 'full' : (selectedDate == i ? 'selected' : ''));
+                grid.innerHTML += `<div class="cal-day ${statusClass}" onclick="selectDate(this, ${i}, ${isSunday || isFull})">${i}${isSunday ? '<br><small style="font-size:8px">CLOSED</small>' : (isFull ? '<br><small style="font-size:8px">FULL</small>' : '')}</div>`;
+            }
+        }
+
+        function selectDate(el, day, disabled) {
+            if (disabled) return;
+            document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedDate = day;
+        }
+
+        function finalizeBooking() {
+            const model = document.getElementById('inputModel').value;
+            const plate = document.getElementById('inputPlate').value;
+            const year = document.getElementById('inputYear').value;
+            const pkg = document.getElementById('packageSelect').value;
+            const time = document.getElementById('inputTime').value;
+            if (!selectedDate || !model || !pkg || !time || !year) return alert("Please complete all fields!");
+
+            bookings.unshift({
+                id: "SPO" + Math.floor(100000 + Math.random() * 900000),
+                model: model, plate: plate, year: year, package: pkg, status: "BOOKED ",
+                date: (selectedDate < 10 ? '0' + selectedDate : selectedDate) + "/05/2026", time: time
+            });
+            renderTable(); closeModal(); showToast("Booking created!");
+        }
+
+        function openEditModal(id, isViewOnly = false) {
+            const b = bookings.find(x => x.id === id);
+            if (!b) return;
+            currentEditingId = id;
+
+            const updateBtn = document.getElementById('updateBtn');
+            const title = document.getElementById('editModalTitle');
+            const inputs = [
+                document.getElementById('editPackageSelect'),
+                document.getElementById('editVehicleModel'),
+                document.getElementById('editPlateNumber'),
+                document.getElementById('editYearInput')
+            ];
+
+            if (isViewOnly) {
+                updateBtn.style.display = 'none';
+                title.innerText = "View Booking Details";
+                inputs.forEach(input => input.disabled = true);
+            } else {
+                updateBtn.style.display = 'block';
+                title.innerText = "Edit Booking Details";
+                inputs.forEach(input => input.disabled = false);
+            }
+
+            document.getElementById('editID').innerText = b.id;
+            document.getElementById('editStatusText').innerHTML = `<small class="status-badge-inline ${getStatusClass(b.status)}">${b.status}</small>`;
+            document.getElementById('editPackageSelect').value = b.package;
+            handlePackageChange(b.package);
+
+            document.getElementById('editVehicleModel').value = b.model;
+            document.getElementById('editPlateNumber').value = b.plate || "";
+            document.getElementById('editYearInput').value = b.year || "";
+            document.getElementById('editDate').innerText = b.date;
+            document.getElementById('editTime').innerText = b.time;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        function updateBooking() {
+            const b = bookings.find(x => x.id === currentEditingId);
+            if (b) {
+                b.package = document.getElementById('editPackageSelect').value;
+                b.model = document.getElementById('editVehicleModel').value;
+                b.plate = document.getElementById('editPlateNumber').value;
+                b.year = document.getElementById('editYearInput').value;
+
+                renderTable(); closeEditModal(); showToast("Updated successfully!");
+            }
+        }
+
+        let bookingToDelete = null;
+
+        function deleteBooking(id) {
+            bookingToDelete = id;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            bookingToDelete = null;
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        function confirmDelete() {
+            if (bookingToDelete) {
+                bookings = bookings.filter(x => x.id !== bookingToDelete);
+                renderTable();
+                closeDeleteModal();
+                showToast("Deleted successfully.");
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        renderTable();
+
+        // Load user from session storage
+        document.addEventListener("DOMContentLoaded", () => {
+            const userStr = sessionStorage.getItem('currentUser');
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    const nameEl = document.getElementById('sidebar-user-name');
+                    const roleEl = document.getElementById('sidebar-user-role');
+                    if (nameEl) nameEl.textContent = user.name || user.username;
+                    if (roleEl) roleEl.textContent = user.email || user.role;
+                    
+                    // Handle role visibility
+                    if (user.role === 'customer') {
+                       document.querySelectorAll('.role-staff').forEach(el => el.style.display = 'none');
+                    } else {
+                       document.querySelectorAll('.role-customer').forEach(el => el.style.display = 'none');
+                    }
+                } catch (e) {}
+            }
+        });
+
+        // Logout
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'homepage.html';
+            });
+        }
+    </script>
+</body>
+
+</html>
